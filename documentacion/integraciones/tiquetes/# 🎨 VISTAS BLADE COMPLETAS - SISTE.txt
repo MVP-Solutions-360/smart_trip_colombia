@@ -1,0 +1,700 @@
+# 🎨 VISTAS BLADE COMPLETAS - SISTEMA DE RESERVAS
+
+## 1. BÚSQUEDA DE VUELOS
+
+### search-show.blade.php
+```html
+<div class="">
+    <div class="">
+        <div>
+            <div class="flex flex-row format-boxes">
+                <div class="w-full">
+                    <div class="m-4">
+                        <div class="py-2" x-data>
+                            <!-- Tipo de vuelo -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                                <div x-data>
+                                    <div class="form-control-md input-form bg-white">
+                                        <label class="text-xs ml-3">Tipo de vuelo*</label>
+                                        <select class="input-gds w-full h-11" wire:model="roundtrip">
+                                            <option value="" disabled>Seleccione tipo de vuelo</option>
+                                            <option value="0" selected>Solo ida</option>
+                                            <option value="1">Ida y vuelta</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Origen -->
+                                <div x-data>
+                                    <div class="form-control-md input-form bg-white">
+                                        <label class="text-xs ml-3">Origen*</label>
+                                        <input value="{{ $departure }}" type="text"
+                                            class="col flex-2 pb-3 rounded input-gds w-full" autocomplete="off"
+                                            placeholder="Origen*" wire:model.debounce.300ms="searchDeparture" />
+                                        <div class="absolute invisible scrollspy-example"
+                                            :class="{ 'invisible': !$wire.openDep }" @click.away="$wire.openDep=false">
+                                            <div class="bg-gray-300 shadow-xl pt-2 mt-1 rounded">
+                                                <div class="px-4 py-3">
+                                                    @forelse ($field as $route)
+                                                        <button class="hover:text-white hover:bg-sky-500"
+                                                            wire:click="selectDeparture('{{ $route['iata'] }}','{{ $route['city'] }}', '{{ $route['name'] }}')">
+                                                            {{ $route['iata'] }} | {{ $route['city'] }} | {{ $route['name'] }}
+                                                        </button><br>
+                                                    @empty
+                                                        <p>No existe ningún destino que coincida</p>
+                                                    @endforelse
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @error('departure')
+                                        <span class="text-xs text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                
+                                <!-- Destino -->
+                                <div x-data>
+                                    <div class="form-control-md input-form bg-white">
+                                        <label class="text-xs ml-3">Destino*</label>
+                                        <input value="{{ $arrival }}" type="text"
+                                            class="col flex-2 pb-3 rounded input-gds w-full" autocomplete="off"
+                                            placeholder="Destino*" wire:model.debounce.300ms="searchArrival" />
+                                        <div class="absolute invisible scrollspy-example"
+                                            :class="{ 'invisible': !$wire.openArr }" @click.away="$wire.openArr=false">
+                                            <div class="bg-gray-300 shadow-xl pt-2 mt-1 rounded">
+                                                <div class="px-4 py-3">
+                                                    @forelse ($field as $route)
+                                                        <button class="hover:text-white hover:bg-sky-500"
+                                                            wire:click="selectArrival('{{ $route['iata'] }}','{{ $route['city'] }}', '{{ $route['name'] }}')">
+                                                            {{ $route['iata'] }} | {{ $route['city'] }} | {{ $route['name'] }}
+                                                        </button>
+                                                    @empty
+                                                        <p>No existe ningún destino que coincida</p>
+                                                    @endforelse
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @error('arrival')
+                                        <span class="text-xs text-red-500">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Fechas y pasajeros -->
+                        <div class="py-2">
+                            <div class="grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2" x-data>
+                                @if ($roundtrip == 0)
+                                    <div>
+                                        <div class="form-control-md input-form bg-white">
+                                            <label class="text-xs ml-3">Ida*</label>
+                                            <input wire:model.defer="hourDeparture" class="input-gds w-full"
+                                                type="date" min="{{ $tomorrow }}" max="{{ $end }}">
+                                        </div>
+                                        @error('hourDeparture')
+                                            <span class="text-xs text-red-500">Este campo es necesario</span>
+                                        @enderror
+                                    </div>
+                                @else
+                                    <div class="grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-2">
+                                        <div>
+                                            <div class="form-control-md input-form bg-white">
+                                                <label class="text-xs ml-3">Ida*</label>
+                                                <input wire:model.defer="hourDeparture" class="input-gds w-full"
+                                                    type="date" min="{{ $tomorrow }}" max="{{ $end }}">
+                                            </div>
+                                            @error('hourDeparture')
+                                                <span class="text-xs text-red-500">Este campo es necesario</span>
+                                            @enderror
+                                        </div>
+                                        <div>
+                                            <div class="form-control-md input-form bg-white">
+                                                <label class="text-xs ml-3">Vuelta*</label>
+                                                <input wire:model.defer="hourArrival" class="input-gds w-full"
+                                                    type="date" min="{{ $hourDeparture }}" max="{{ $end }}">
+                                            </div>
+                                            @error('hourArrival')
+                                                <span class="text-xs text-red-500">Este campo es necesario</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                @endif
+                                
+                                <!-- Pasajeros -->
+                                <div class="grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2">
+                                    <div>
+                                        <div class="form-control-md input-form bg-white">
+                                            <label class="text-xs ml-3">Adultos*</label><br>
+                                            <input wire:model.defer="adult" class="input-gds w-full" type="number" max="9" min="1">
+                                        </div>
+                                        @error('adult')
+                                            <span class="text-xs text-red-500">Este campo es necesario</span>
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <div class="form-control-md input-form bg-white">
+                                            <label class="text-xs ml-3">Niños</label><br>
+                                            <input wire:model.defer="child" class="input-gds w-full" type="number" max="5" min="0">
+                                        </div>
+                                    </div>
+                                    <div title="Infante en brazos">
+                                        <div class="form-control-md input-form bg-white">
+                                            <label class="text-xs ml-3">Infantes</label><br>
+                                            <input wire:model.defer="baby" class="input-gds w-full" type="number" max="{{ $adult }}" min="0">
+                                        </div>
+                                    </div>
+                                    <div title="Infante que ocupa asiento">
+                                        <div class="form-control-md input-form bg-white">
+                                            <label class="text-xs ml-3">Inf. silla</label><br>
+                                            <input wire:model.defer="seat" class="input-gds w-full" type="number" max="5" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botón de búsqueda -->
+                <div class="py-6 px-2">
+                    <div class="h-full">
+                        <button class="button h-full" wire:loading.attr="disabled" wire:target="save" wire:click="save">
+                            <svg width="37" height="37" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M24.8221 20.9587L24.8221 20.9586C24.8581 20.5403 24.8939 20.1235 25.067 19.771C27.5101 14.7785 27.3485 9.91082 24.0187 5.43566C20.6196 0.877366 15.8996 -0.859126 10.3623 0.39706C5.05118 1.60244 1.58282 5.0431 0.391287 10.3727C-0.83257 15.85 0.816173 20.5607 5.31443 23.9598C9.71108 27.285 14.5465 27.5528 19.5066 25.1744C19.6218 25.119 19.7355 25.057 19.8476 24.9958L19.8476 24.9958C20.4366 24.6745 20.9827 24.3767 21.4832 25.1836C22.0498 24.6341 22.6055 24.0936 23.1558 23.5582C23.7942 22.9372 24.4253 22.3233 25.0578 21.7107C24.9562 21.6552 24.8592 21.5998 24.7576 21.5398C24.7885 21.35 24.8053 21.1542 24.8221 20.9587ZM13.4935 24.3431C7.46657 24.4539 2.45568 19.6232 2.36793 13.6055C2.27557 7.46772 7.06015 2.45684 13.1286 2.34138C19.1925 2.22592 24.2588 7.11673 24.3466 13.1714C24.4343 19.2722 19.6174 24.2276 13.4889 24.3385L13.4935 24.3431ZM29.0756 25.1124L29.0755 25.1124C28.2051 24.3149 27.3389 23.5214 26.4803 22.7313C26.0921 23.1028 25.7085 23.4701 25.3258 23.8365C24.4384 24.6863 23.5561 25.5312 22.6332 26.4121C23.5042 27.3566 24.3691 28.3011 25.2318 29.2433C27.3518 31.5585 29.4593 33.8602 31.6159 36.1152C32.8443 37.3991 34.8164 37.2329 36.0356 35.9582C37.2364 34.7066 37.2872 32.7346 35.9987 31.52C33.7038 29.3525 31.375 27.2189 29.0756 25.1124ZM7.40784 7.56943C3.94409 11.1902 4.36898 16.8523 8.3315 19.9142C8.39592 19.9651 8.46904 20.0085 8.54151 20.0515C8.66649 20.1256 8.78953 20.1986 8.86261 20.3068C8.9843 20.491 9.06383 20.7056 9.1429 20.919C9.17486 21.0052 9.20675 21.0913 9.24131 21.175C9.12964 21.1824 9.00909 21.2047 8.88887 21.2269C8.63124 21.2746 8.37517 21.322 8.21143 21.2212C6.29482 20.0205 4.97398 18.3209 4.34588 16.1457C3.29752 12.5018 4.11035 9.29669 6.75665 6.57649C6.92623 6.40106 7.12543 6.25525 7.38824 6.06288C7.54054 5.95139 7.71421 5.82427 7.91585 5.66668C7.95346 5.8453 8.0001 6.00426 8.04171 6.14607C8.12275 6.42224 8.18471 6.63339 8.12368 6.79817C8.04574 7.00393 7.85837 7.16549 7.66953 7.32832C7.57863 7.40671 7.48738 7.48539 7.40784 7.56943Z"
+                                    fill="white" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div wire:loading.flex wire:target="save"
+                        class="fixed top-0 left-0 center w-screen h-screen bg-gray-800 bg-opacity-75 z-50">
+                        <img src="{{ asset('image/logos/aiop.gif') }}" alt="Cargando..." loop>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+## 2. RESULTADOS DE VUELOS
+
+### show-response.blade.php
+```html
+<div class="container mx-auto p-4">
+    <div class="mb-4">
+        <h2 class="text-2xl font-bold">Resultados de Búsqueda</h2>
+        <p class="text-gray-600">Se encontraron {{ $itinerary->count() }} opciones de vuelo</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="mb-6 bg-white p-4 rounded-lg shadow">
+        <div class="flex flex-wrap gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Filtrar por Aerolínea</label>
+                <select wire:model="airline" class="border border-gray-300 rounded-md px-3 py-2">
+                    <option value="">Todas las aerolíneas</option>
+                    @foreach($uniqueAirlines as $airlineCode)
+                        <option value="{{ $airlineCode }}">{{ $airlineCode }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de vuelos -->
+    <div class="space-y-4">
+        @foreach($itinerary as $index => $flight)
+            <div class="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-gray-800">
+                            Vuelo {{ $index + 1 }}
+                        </h3>
+                        <div class="text-sm text-gray-600">
+                            @foreach($flight['itinerary']['seg1'] as $segment)
+                                @foreach($segment as $seg)
+                                    <div class="flex items-center space-x-4 py-2">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="font-medium">{{ $seg['companyId']['marketingCarrier'] }}</span>
+                                            <span class="text-gray-500">{{ $seg['flightOrtrainNumber'] }}</span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="font-medium">{{ $seg['location']['departure'] }}</span>
+                                            <span class="text-gray-400">→</span>
+                                            <span class="font-medium">{{ $seg['location']['arrival'] }}</span>
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            {{ $seg['productDateTime']['dateOfDeparture'] }} {{ $seg['productDateTime']['timeOfDeparture'] }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-blue-600">
+                            ${{ number_format($flight['fares']['fare'], 0, ',', '.') }}
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            + ${{ number_format($flight['fares']['tax'], 0, ',', '.') }} impuestos
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles de tarifa -->
+                <div class="mb-4">
+                    <h4 class="font-medium text-gray-700 mb-2">Detalles de Tarifa</h4>
+                    <div class="text-sm text-gray-600">
+                        @foreach($flight['details'] as $detail)
+                            <p>{{ $detail[0] }}</p>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="flex space-x-4">
+                    <button wire:click="submit({{ $flight['itinerary']['seg1'][0][0]['key'] }})"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                        Seleccionar Vuelo
+                    </button>
+                    <button wire:click="getGoings({{ json_encode($flight) }})"
+                            class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+                        Ver Familias Tarifarias
+                    </button>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    @if($itinerary->isEmpty())
+        <div class="text-center py-12">
+            <div class="text-gray-500 text-lg">No se encontraron vuelos para los criterios seleccionados</div>
+            <button wire:click="$emit('refresh')" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
+                Nueva Búsqueda
+            </button>
+        </div>
+    @endif
+</div>
+```
+
+## 3. FORMULARIO DE PASAJEROS
+
+### segment/show-segment.blade.php
+```html
+<div class="container mx-auto p-4">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold">Datos de los Pasajeros</h2>
+        <p class="text-gray-600">Complete la información de todos los viajeros</p>
+    </div>
+
+    <!-- Información de contacto -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Información de Contacto</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono*</label>
+                <input type="tel" wire:model="tel" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                @error('tel') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email*</label>
+                <input type="email" wire:model="email" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario de pasajeros -->
+    <div class="space-y-6">
+        @for($i = 0; $i < $passengers['qtyPassengers']; $i++)
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Pasajero {{ $i + 1 }}</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Nombre -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre*</label>
+                        @if($i < $passengers['adult'])
+                            <input type="text" wire:model="name.{{ $i }}.adult" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="Nombre del pasajero">
+                            @error("name.{$i}.adult") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @else
+                            <input type="text" wire:model="name.{{ $i }}" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="Nombre del pasajero">
+                            @error("name.{$i}") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @endif
+                    </div>
+
+                    <!-- Apellido -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Apellido*</label>
+                        @if($i < $passengers['adult'])
+                            <input type="text" wire:model="lastName.{{ $i }}.adult" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="Apellido del pasajero">
+                            @error("lastName.{$i}.adult") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @else
+                            <input type="text" wire:model="lastName.{{ $i }}" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="Apellido del pasajero">
+                            @error("lastName.{$i}") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @endif
+                    </div>
+
+                    <!-- Fecha de nacimiento -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento*</label>
+                        @if($i < $passengers['adult'])
+                            <input type="date" wire:model="birth.{{ $i }}.adult" 
+                                   max="{{ $endBirthChd }}" min="{{ $hourBirth->format('Y-m-d') }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            @error("birth.{$i}.adult") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @else
+                            <input type="date" wire:model="birth.{{ $i }}" 
+                                   max="{{ $endBirthChd }}" min="{{ $hourBirth->format('Y-m-d') }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            @error("birth.{$i}") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @endif
+                    </div>
+
+                    <!-- Género -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Género*</label>
+                        @if($i < $passengers['adult'])
+                            <select wire:model="sex.{{ $i }}.adult" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Seleccionar</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                            @error("sex.{$i}.adult") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @else
+                            <select wire:model="sex.{{ $i }}" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Seleccionar</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                            @error("sex.{$i}") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @endif
+                    </div>
+
+                    <!-- Tipo de pasajero -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo*</label>
+                        @if($i < $passengers['adult'])
+                            <select wire:model="gener.{{ $i }}.adult" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Seleccionar</option>
+                                <option value="ADT">Adulto</option>
+                            </select>
+                            @error("gener.{$i}.adult") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @elseif($i < $passengers['adult'] + $passengers['child'])
+                            <select wire:model="gener.{{ $i }}" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Seleccionar</option>
+                                <option value="CHD">Niño</option>
+                            </select>
+                            @error("gener.{$i}") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @else
+                            <select wire:model="gener.{{ $i }}" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Seleccionar</option>
+                                <option value="SEAT">Infante con asiento</option>
+                            </select>
+                            @error("gener.{$i}") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Infante en brazos (si aplica) -->
+                @if($i < $passengers['adult'] && $passengers['baby'] > 0)
+                    <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-medium text-gray-700 mb-3">Infante en Brazos</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre*</label>
+                                <input type="text" wire:model="name.{{ $i }}.baby" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Nombre del infante">
+                                @error("name.{$i}.baby") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Apellido*</label>
+                                <input type="text" wire:model="lastName.{{ $i }}.baby" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Apellido del infante">
+                                @error("lastName.{$i}.baby") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento*</label>
+                                <input type="date" wire:model="birth.{{ $i }}.baby" 
+                                       max="{{ $endBirthBaby }}" min="{{ $hourBirth->format('Y-m-d') }}"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                @error("birth.{$i}.baby") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Género*</label>
+                                <select wire:model="sex.{{ $i }}.baby" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Seleccionar</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                                @error("sex.{$i}.baby") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        @endfor
+    </div>
+
+    <!-- Botón de continuar -->
+    <div class="mt-8 text-center">
+        <button wire:click="savePnr" 
+                class="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 font-medium">
+            Continuar con la Reserva
+        </button>
+    </div>
+</div>
+```
+
+## 4. CONFIRMACIÓN DE RESERVA
+
+### pnr/show-pnr.blade.php
+```html
+<div class="container mx-auto p-4">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-green-600">¡Reserva Confirmada!</h2>
+        <p class="text-gray-600">Su reserva ha sido procesada exitosamente</p>
+    </div>
+
+    <!-- Información de la reserva -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex justify-between items-start mb-4">
+            <div>
+                <h3 class="text-lg font-semibold">Número de Reserva</h3>
+                <p class="text-2xl font-bold text-blue-600">{{ $control_number }}</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-gray-500">Fecha de reserva</p>
+                <p class="font-medium">{{ now()->format('d/m/Y H:i') }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalles del vuelo -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Detalles del Vuelo</h3>
+        
+        <!-- Vuelo de ida -->
+        <div class="mb-6">
+            <h4 class="font-medium text-gray-700 mb-3">Vuelo de Ida</h4>
+            @foreach($going['going'] as $segment)
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">{{ $segment['companyId']['marketingCarrier'] }}</div>
+                                <div class="text-sm text-gray-500">{{ $segment['flightOrtrainNumber'] }}</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-semibold">{{ $segment['location']['departure'] }}</div>
+                                <div class="text-sm text-gray-500">{{ $segment['location']['departureAto'] }}</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-semibold">{{ $segment['location']['arrival'] }}</div>
+                                <div class="text-sm text-gray-500">{{ $segment['location']['arrivalAto'] }}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-semibold">
+                                {{ \Carbon\Carbon::parse($segment['productDateTime']['dateOfDeparture'])->format('d/m/Y') }}
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                {{ $segment['productDateTime']['timeOfDeparture'] }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Vuelo de regreso (si aplica) -->
+        @if($return)
+            <div class="mb-6">
+                <h4 class="font-medium text-gray-700 mb-3">Vuelo de Regreso</h4>
+                @foreach($return as $segment)
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center space-x-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold">{{ $segment['companyId']['marketingCarrier'] }}</div>
+                                    <div class="text-sm text-gray-500">{{ $segment['flightOrtrainNumber'] }}</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-lg font-semibold">{{ $segment['location']['departure'] }}</div>
+                                    <div class="text-sm text-gray-500">{{ $segment['location']['departureAto'] }}</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-lg font-semibold">{{ $segment['location']['arrival'] }}</div>
+                                    <div class="text-sm text-gray-500">{{ $segment['location']['arrivalAto'] }}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-semibold">
+                                    {{ \Carbon\Carbon::parse($segment['productDateTime']['dateOfDeparture'])->format('d/m/Y') }}
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    {{ $segment['productDateTime']['timeOfDeparture'] }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+
+    <!-- Pasajeros -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Pasajeros</h3>
+        <div class="space-y-2">
+            @foreach($passengers as $passenger)
+                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                    <div>
+                        <span class="font-medium">{{ $passenger['name'] }} {{ $passenger['lastName'] }}</span>
+                        <span class="text-sm text-gray-500 ml-2">({{ $passenger['passengerType'] }})</span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        {{ $passenger['number'] }}
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <!-- Resumen de precios -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Resumen de Precios</h3>
+        <div class="space-y-2">
+            <div class="flex justify-between">
+                <span>Tarifa base</span>
+                <span>${{ number_format($price, 0, ',', '.') }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span>Impuestos</span>
+                <span>$0</span>
+            </div>
+            <div class="border-t pt-2">
+                <div class="flex justify-between font-bold text-lg">
+                    <span>Total</span>
+                    <span>${{ number_format($price, 0, ',', '.') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="flex space-x-4">
+        <a href="{{ route('flights.emit-ticket') }}" 
+           class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 font-medium">
+            Emitir Tiquetes
+        </a>
+        <button onclick="window.print()" 
+                class="bg-gray-600 text-white px-6 py-3 rounded-md hover:bg-gray-700 font-medium">
+            Imprimir Reserva
+        </button>
+    </div>
+</div>
+```
+
+## 5. EMISIÓN DE TIQUETES
+
+### pnr/show-ticket.blade.php
+```html
+<div class="container mx-auto p-4">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold">Emisión de Tiquetes</h2>
+        <p class="text-gray-600">Complete el pago para emitir los tiquetes</p>
+    </div>
+
+    <!-- Resumen de la reserva -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Resumen de la Reserva</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm text-gray-500">Número de Reserva</p>
+                <p class="font-semibold">{{ $control_number }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Total a Pagar</p>
+                <p class="text-2xl font-bold text-blue-600">${{ number_format($price, 0, ',', '.') }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Selección de método de pago -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold mb-4">Método de Pago</h3>
+        
+        <!-- Pestañas de métodos de pago -->
+        <div class="flex space-x-4 mb-6">
+            <button wire:click="$set('paymentMethod', 'card')" 
+                    class="px-4 py-2 rounded-md {{ $paymentMethod === 'card' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700' }}">
+                Tarjeta de Crédito
+            </button>
+            <button wire:click="$set('paymentMethod', 'pse')" 
+                    class="px-4 py-2 rounded-md {{ $paymentMethod === 'pse' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700' }}">
+                PSE
+            </button>
+        </div>
+
+        @if($paymentMethod === 'card')
+            <!-- Formulario de tarjeta -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Seleccionar Tarjeta</label>
+                    <select wire:model="card" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Seleccionar tarjeta guardada</option>
+                        @foreach($pays as $pay)
+                            <option value="{{ json_encode($pay) }}">{{ $pay->bank_name }} - ****{{ $pay->number }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                    <input type="text" wire:model="cvc" maxlength="4" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="123">
+                </div>
+
+                <button wire:click="emitTkt" 
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+                    Emitir Tiquete con Tarjeta
+                </button>
+            </div>
+        @else
+            <!-- Pago PSE -->
+            <div>
+                <p class="text-gray-600 mb-4">Será redirigido a PSE para completar el pago</p>
+                <button wire:click="tkt_pse" 
+                        class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
+                    Pagar con PSE
+                </button>
+            </div>
+        @endif
+    </div>
+
+    <!-- Mensajes de estado -->
+    @if($successMessage)
+        <div class="mb-6 p-4 rounded-md {{ $success ? 'bg-green-100 border border-gree

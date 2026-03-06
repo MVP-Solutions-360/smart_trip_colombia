@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mis Viajes - SmartTrip Colombia</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1773cf",
+                        "secondary": "#26c6da",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111921",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .active-nav {
+            background-color: rgba(23, 115, 207, 0.1);
+            color: #1773cf;
+            border-left: 4px solid #1773cf;
+        }
+
+        .trip-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+    <script src="../crm-service.js?v=v9-final-fix"></script>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation (Paths relative to /html/) -->
+        <aside
+            class="hidden lg:flex w-64 flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 fixed h-full">
+            <div class="p-6 flex items-center gap-3">
+                <div class="bg-primary p-2 rounded-lg"><span
+                        class="material-symbols-outlined text-white">travel_explore</span></div>
+                <div>
+                    <h1 class="text-primary font-bold text-lg leading-tight">SmartTrip</h1>
+                    <p class="text-xs text-slate-500 font-medium">Colombia Edition</p>
+                </div>
+            </div>
+            <nav class="mt-6 px-4 space-y-2 flex-1">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
+                    href="../dashboard.html"><span class="material-symbols-outlined">dashboard</span><span
+                        class="font-semibold text-sm">Panel</span></a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg active-nav" href="my-trips.html"><span
+                        class="material-symbols-outlined">map</span><span class="font-semibold text-sm">Mis
+                        viajes</span></a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
+                    href="#"><span class="material-symbols-outlined">description</span><span
+                        class="font-semibold text-sm">Documentos</span></a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
+                    href="#"><span class="material-symbols-outlined">support_agent</span><span
+                        class="font-semibold text-sm">Soporte</span></a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
+                    href="../index.html"><span class="material-symbols-outlined">home</span><span
+                        class="font-semibold text-sm">Volver al Sitio</span></a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-500 transition-colors hover:bg-red-100"
+                    href="#" id="logoutBtn"><span class="material-symbols-outlined">logout</span><span
+                        class="font-semibold text-sm">Cerrar Sesión</span></a>
+            </nav>
+            <div class="p-6 border-t border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div id="userAvatar" class="size-10 rounded-full bg-slate-200 bg-cover bg-center"
+                        style="background-image: url('https://ui-avatars.com/api/?name=User')"></div>
+                    <div>
+                        <p class="text-sm font-bold truncate w-32" id="userName">Cargando...</p>
+                        <p class="text-xs text-slate-500" id="userBadge">Nivel 1</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 lg:ml-64 flex flex-col min-h-screen">
+            <header
+                class="sticky top-0 z-30 flex items-center justify-between px-4 lg:px-8 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-4 lg:hidden">
+                    <span class="material-symbols-outlined text-slate-600" id="mobileMenuBtn">menu</span>
+                    <span class="font-bold text-primary">SmartTrip</span>
+                </div>
+                <h1 class="text-xl font-bold hidden lg:block">Mis Viajes</h1>
+                <div class="flex items-center gap-3">
+                    <div class="lg:hidden size-8 rounded-full bg-cover bg-center ring-2 ring-slate-100"
+                        id="userMobileAvatar" style="background-image: url('https://ui-avatars.com/api/?name=User')">
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 lg:p-8 space-y-10">
+                <!-- TOP CARDS: CATEGORIES -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Activos -->
+                    <div onclick="scrollToSection('activos')"
+                        class="bg-blue-600 hover:bg-blue-700 p-6 rounded-3xl shadow-xl shadow-blue-500/20 text-white cursor-pointer transition-all group overflow-hidden relative">
+                        <div class="relative z-10">
+                            <h3 class="text-lg font-bold opacity-80 mb-1">En curso</h3>
+                            <div class="text-4xl font-black mb-4">Activos</div>
+                            <span
+                                class="bg-white/20 px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md border border-white/20">1
+                                Viaje ahora</span>
+                        </div>
+                        <span
+                            class="material-symbols-outlined absolute -right-4 -bottom-4 text-9xl opacity-10 font-black group-hover:scale-110 transition-transform">travel</span>
+                    </div>
+
+                    <!-- Planeados -->
+                    <div onclick="scrollToSection('planeados')"
+                        class="bg-emerald-600 hover:bg-emerald-700 p-6 rounded-3xl shadow-xl shadow-emerald-500/20 text-white cursor-pointer transition-all group overflow-hidden relative">
+                        <div class="relative z-10">
+                            <h3 class="text-lg font-bold opacity-80 mb-1">Próximos</h3>
+                            <div class="text-4xl font-black mb-4">Planeados</div>
+                            <span
+                                class="bg-white/20 px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md border border-white/20">2
+                                Viajes listos</span>
+                        </div>
+                        <span
+                            class="material-symbols-outlined absolute -right-4 -bottom-4 text-9xl opacity-10 font-black group-hover:scale-110 transition-transform">schedule</span>
+                    </div>
+
+                    <!-- Pasados -->
+                    <div onclick="scrollToSection('pasados')"
+                        class="bg-slate-700 hover:bg-slate-800 p-6 rounded-3xl shadow-xl shadow-slate-500/20 text-white cursor-pointer transition-all group overflow-hidden relative">
+                        <div class="relative z-10">
+                            <h3 class="text-lg font-bold opacity-80 mb-1">Recuerdos</h3>
+                            <div class="text-4xl font-black mb-4">Pasados</div>
+                            <span
+                                class="bg-white/20 px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md border border-white/20">15
+                                Aventuras</span>
+                        </div>
+                        <span
+                            class="material-symbols-outlined absolute -right-4 -bottom-4 text-9xl opacity-10 font-black group-hover:scale-110 transition-transform">history</span>
+                    </div>
+                </div>
+
+                <!-- SECTIONS -->
+                <div class="space-y-12">
+                    <!-- SECTION: ACTIVO -->
+                    <section id="activos">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-black tracking-tight">Viajes Activos</h2>
+                            <div class="h-px flex-1 bg-slate-200 dark:bg-slate-800 mx-6"></div>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <!-- Card Trip Active -->
+                            <div
+                                class="bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row group trip-card">
+                                <div class="w-full md:w-2/5 h-48 md:h-auto overflow-hidden relative">
+                                    <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                        alt="Destino">
+                                    <div
+                                        class="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                                        Activo</div>
+                                </div>
+                                <div class="p-8 flex-1">
+                                    <h3 class="text-2xl font-black mb-2">Playa del Carmen</h3>
+                                    <div class="flex items-center gap-2 text-slate-500 text-sm font-bold mb-4">
+                                        <span class="material-symbols-outlined text-lg">calendar_today</span>
+                                        <span>25 Ago - 02 Sep</span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                                        Actualmente disfrutando del sol y mar en Grand Hyatt.</p>
+                                    <button
+                                        class="w-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 py-3 rounded-2xl font-bold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all">Ver
+                                        Itinerario</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION: PLANEADOS -->
+                    <section id="planeados">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-black tracking-tight text-slate-400">Viajes Planeados</h2>
+                            <div class="h-px flex-1 bg-slate-200 dark:bg-slate-800 mx-6"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Trip Planned 1 -->
+                            <div
+                                class="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 group trip-card">
+                                <div class="h-40 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        alt="Cancun">
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="font-black text-xl mb-1">Cancún, México</h3>
+                                    <p class="text-emerald-600 text-xs font-bold mb-4 uppercase tracking-wider">En 45
+                                        días</p>
+                                    <div class="flex items-center justify-between mt-6">
+                                        <div class="flex -space-x-2">
+                                            <div class="size-6 rounded-full bg-slate-200 border-2 border-white dark:border-slate-900 bg-cover"
+                                                style="background-image: url('https://i.pravatar.cc/100?u=1')"></div>
+                                            <div class="size-6 rounded-full bg-slate-200 border-2 border-white dark:border-slate-900 bg-cover"
+                                                style="background-image: url('https://i.pravatar.cc/100?u=2')"></div>
+                                        </div>
+                                        <span class="material-symbols-outlined text-slate-400">arrow_forward</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Trip Planned 2 -->
+                            <div
+                                class="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 group trip-card">
+                                <div class="h-40 overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        alt="Punta Cana">
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="font-black text-xl mb-1">Punta Cana, RD</h3>
+                                    <p class="text-emerald-600 text-xs font-bold mb-4 uppercase tracking-wider">En 90
+                                        días</p>
+                                    <div class="flex items-center justify-between mt-6">
+                                        <div class="flex -space-x-2">
+                                            <div class="size-6 rounded-full bg-slate-200 border-2 border-white dark:border-slate-900 bg-cover"
+                                                style="background-image: url('https://i.pravatar.cc/100?u=3')"></div>
+                                        </div>
+                                        <span class="material-symbols-outlined text-slate-400">arrow_forward</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION: PASADOS -->
+                    <section id="pasados">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-black tracking-tight text-slate-400 opacity-50">Viajes Pasados</h2>
+                            <div class="h-px flex-1 bg-slate-200 dark:bg-slate-800 mx-6 opacity-30"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 opacity-60">
+                            <!-- Trip Past 1 -->
+                            <div
+                                class="bg-white/50 dark:bg-slate-900/50 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 grayscale hover:grayscale-0 transition-all cursor-pointer group">
+                                <h4 class="font-bold text-lg group-hover:text-primary transition-colors">San Andrés, CO
+                                </h4>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Diciembre 2024</p>
+                            </div>
+                            <!-- Trip Past 2 -->
+                            <div
+                                class="bg-white/50 dark:bg-slate-900/50 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 grayscale hover:grayscale-0 transition-all cursor-pointer group">
+                                <h4 class="font-bold text-lg group-hover:text-primary transition-colors">Santa Marta, CO
+                                </h4>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Octubre 2024</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Lógica de Menú Móvil
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.querySelector('aside');
+
+        if (mobileMenuBtn && sidebar) {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('hidden');
+                sidebar.classList.toggle('flex');
+                sidebar.classList.toggle('fixed');
+                sidebar.classList.toggle('z-[60]');
+                sidebar.classList.toggle('w-72');
+                sidebar.classList.toggle('bg-white');
+                sidebar.classList.toggle('shadow-2xl');
+            });
+
+            // Cerrar al hacer click fuera
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                    sidebar.classList.add('hidden');
+                    sidebar.classList.remove('flex', 'fixed', 'z-[60]', 'w-72', 'shadow-2xl');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            window.CRM = new CRMConnector();
+
+            // Sincronizar UI de usuario
+            const localProfileRaw = localStorage.getItem('crm_user_profile');
+            const localProfile = localProfileRaw ? JSON.parse(localProfileRaw) : null;
+
+            const updateUI = (user) => {
+                if (!user) return;
+                const name = user.name || user.first_name || "Viajero";
+                document.querySelectorAll('#userName, #welcomeName').forEach(el => el.innerText = name);
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1773cf&color=fff`;
+                document.getElementById('userAvatar').style.backgroundImage = `url('${avatarUrl}')`;
+
+                if (user.roles && user.roles.length > 0) {
+                    document.getElementById('userBadge').innerText = user.roles[0].name;
+                }
+            };
+
+            if (localProfile) updateUI(localProfile);
+
+            // FUNCIÓN DE RENDERIZADO DE VIAJES
+            const renderTrips = (quotations) => {
+                const containers = {
+                    activos: document.querySelector('#activos .grid'),
+                    planeados: document.querySelector('#planeados .grid'),
+                    pasados: document.querySelector('#pasados .grid')
+                };
+
+                // Limpiar contenedores
+                Object.values(containers).forEach(c => { if (c) c.innerHTML = ''; });
+
+                let counts = { activos: 0, planeados: 0, pasados: 0 };
+
+                quotations.forEach(quote => {
+                    const status = (quote.status || '').toLowerCase();
+                    let category = 'planeados';
+
+                    // Lógica de clasificación por estado
+                    if (status.includes('activo') || status.includes('proceso') || status.includes('curso')) {
+                        category = 'activos';
+                    } else if (status.includes('viajado') || status.includes('pasado') || status.includes('finalizado')) {
+                        category = 'pasados';
+                    } else {
+                        category = 'planeados';
+                    }
+
+                    counts[category]++;
+
+                    const card = createTripCard(quote, category);
+                    if (containers[category]) containers[category].appendChild(card);
+                });
+
+                // Actualizar contadores en las tarjetas superiores
+                updateCounters(counts);
+            };
+
+            const createTripCard = (quote, category) => {
+                const div = document.createElement('div');
+                const isPast = category === 'pasados';
+
+                if (category === 'activos') {
+                    div.className = "bg-white dark:bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row group trip-card";
+                    div.innerHTML = `
+                        <div class="w-full md:w-2/5 h-48 md:h-auto overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=800" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Activo</div>
+                        </div>
+                        <div class="p-8 flex-1">
+                            <h3 class="text-2xl font-black mb-2">${quote.destination || 'Destino'}</h3>
+                            <div class="flex items-center gap-2 text-slate-500 text-sm font-bold mb-4">
+                                <span class="material-symbols-outlined text-lg">calendar_today</span>
+                                <span>${quote.departure_date || 'Próximamente'}</span>
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">Ref: ${quote.reference_number}</p>
+                            <button onclick="alert('Ver detalle: ${quote.id}')" class="w-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 py-3 rounded-2xl font-bold text-sm hover:scale-[1.02] transition-all">Ver Itinerario</button>
+                        </div>
+                    `;
+                } else if (category === 'pasados') {
+                    div.className = "bg-white/50 dark:bg-slate-900/50 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 grayscale hover:grayscale-0 transition-all cursor-pointer group";
+                    div.innerHTML = `
+                        <h4 class="font-bold text-lg group-hover:text-primary transition-colors">${quote.destination || 'Viaje'}</h4>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">${quote.departure_date || 'Fecha desconocida'}</p>
+                    `;
+                } else {
+                    div.className = "bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 group trip-card";
+                    div.innerHTML = `
+                        <div class="h-40 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=800" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-black text-xl mb-1">${quote.destination || 'Destino'}</h3>
+                            <p class="text-emerald-600 text-xs font-bold mb-4 uppercase tracking-wider">${quote.status || 'Planeado'}</p>
+                            <div class="flex items-center justify-between mt-6">
+                                <span class="text-xs text-slate-400">Ref: ${quote.reference_number}</span>
+                                <span class="material-symbols-outlined text-slate-400">arrow_forward</span>
+                            </div>
+                        </div>
+                    `;
+                }
+                return div;
+            };
+
+            const updateCounters = (counts) => {
+                const activoCard = document.querySelector('[onclick*="activos"] span:last-child');
+                const planeadoCard = document.querySelector('[onclick*="planeados"] span:last-child');
+                const pasadoCard = document.querySelector('[onclick*="pasados"] span:last-child');
+
+                if (activoCard) activoCard.innerText = `${counts.activos} Viaje${counts.activos !== 1 ? 's' : ''}`;
+                if (planeadoCard) planeadoCard.innerText = `${counts.planeados} Viaje${counts.planeados !== 1 ? 's' : ''}`;
+                if (pasadoCard) pasadoCard.innerText = `${counts.pasados} Aventura${counts.pasados !== 1 ? 's' : ''}`;
+            };
+
+            // CARGAR DATOS
+            try {
+                // 1. Perfil
+                const profileResp = await window.CRM.getMe();
+                const user = profileResp.data || profileResp;
+                if (user && user.name) {
+                    updateUI(user);
+                    localStorage.setItem('crm_user_profile', JSON.stringify(user));
+                }
+
+                // 2. Cotizaciones
+                console.log("Cargando cotizaciones del cliente...");
+                const quoteResp = await window.CRM.getClientQuotations();
+                const quotations = quoteResp.data || [];
+                console.log("Cotizaciones recibidas:", quotations.length);
+                renderTrips(quotations);
+
+            } catch (error) {
+                console.error("Error al cargar datos reales:", error);
+            }
+
+            document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.CRM.logout();
+                window.location.href = '../login.html';
+            });
+        });
+    </script>
+</body>
+
+</html>

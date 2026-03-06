@@ -217,6 +217,20 @@ class CRMConnector {
             body: JSON.stringify(taskData)
         });
     }
+
+    /**
+     * Listar cotizaciones del cliente autenticado
+     */
+    async getClientQuotations() {
+        return await this._request('/client/quotations', { method: 'GET' });
+    }
+
+    /**
+     * Obtener servicios vinculados a una cotización específica
+     */
+    async getQuotationServices(quotationId) {
+        return await this._request(`/client/quotations/${quotationId}/services`, { method: 'GET' });
+    }
 }
 
 // Exportar instancia única para uso global
