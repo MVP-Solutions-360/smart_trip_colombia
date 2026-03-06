@@ -515,3 +515,220 @@ footer h4 {
   color: var(--primary);
   transform: translateY(-3px);
 }
+
+/* Login Page Styles */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('https://images.unsplash.com/photo-1583390969235-24275b1bcbb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+  padding: 24px;
+  position: relative;
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(10, 37, 64, 0.4) 0%, rgba(0, 212, 255, 0.2) 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 450px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-xl);
+  padding: 48px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 10;
+  color: var(--white);
+  text-align: center;
+}
+
+.login-card .logo {
+  color: var(--white);
+  justify-content: center;
+  margin-bottom: 32px;
+  font-size: 28px;
+}
+
+.login-card .logo span {
+  color: var(--secondary);
+}
+
+.login-card h2 {
+  color: var(--white);
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.login-card p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 32px;
+  font-size: 15px;
+}
+
+.login-form {
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  color: var(--white);
+  font-family: var(--font-main);
+  transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.form-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.2);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  font-size: 13px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+.forgot-password {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background: var(--secondary);
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 16px;
+  margin-bottom: 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.btn-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 212, 255, 0.4);
+}
+
+.social-login-divider {
+  display: flex;
+  align-items: center;
+  margin: 32px 0;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.social-login-divider::before,
+.social-login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.social-login-divider span {
+  padding: 0 12px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.social-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.btn-social {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: var(--radius-md);
+}
+
+.btn-social:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.register-link {
+  margin-top: 32px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.register-link a {
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+.back-to-site {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  z-index: 100;
+}
+
+.back-to-site:hover {
+  opacity: 1;
+}

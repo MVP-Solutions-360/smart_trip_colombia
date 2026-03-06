@@ -86,7 +86,8 @@
                 <li><a href="support.html">Soporte</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="quote.html" class="btn-primary">Solicitar Cotización</a>
+                <a href="login.html" class="btn-ghost" style="margin-right: 8px;">Iniciar Sesión</a>
+                <a href="quote.html" class="btn-primary" style="display: none;">Solicitar Cotización</a>
             </div>
         </div>
     </nav>
@@ -204,13 +205,49 @@
         </div>
     </footer>
 
+    <script src="crm-service.js"></script>
     <script>
-        document.getElementById('quote-form').addEventListener('submit', function (e) {
+        document.getElementById('quote-form').addEventListener('submit', async function (e) {
             e.preventDefault();
-            this.style.display = 'none';
-            document.getElementById('success-msg').style.display = 'block';
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerText;
+
+            // Recolectar datos del formulario
+            const quotationData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                destination: document.getElementById('destination').value,
+                tentative_date: document.getElementById('date').value,
+                travelers_count: document.getElementById('travelers').value,
+                description: document.getElementById('message').value,
+                source: 'web_smarttrip_colombia' // Identificador de origen
+            };
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Enviando...';
+
+                // Llamada al servicio CRM
+                const response = await window.CRM.sendQuotation(quotationData);
+
+                console.log("Respuesta CRM:", response);
+
+                // Mostrar éxito
+                this.style.display = 'none';
+                document.getElementById('success-msg').style.display = 'block';
+
+            } catch (error) {
+                console.error("Error al enviar cotización:", error);
+                alert("Hubo un problema al procesar tu solicitud. Por favor intenta de nuevo.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalBtnText;
+            }
         });
     </script>
+    <script src="main.js"></script>
 </body>
 
 </html>
