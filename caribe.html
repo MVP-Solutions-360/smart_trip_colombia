@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caribe Colombiano | SmartTrip Colombia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="material-symbols-outlined">explore</span>
+                SmartTrip<span>Colombia</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="destinations.html" class="active">Destinos</a></li>
+                <li><a href="packages.html">Planes de Viaje</a></li>
+                <li><a href="how-it-works.html">Cómo funciona</a></li>
+                <li><a href="about.html">Nosotros</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header
+        style="height: 480px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center; color: white;">
+        <img src="assets/caribe.png" alt="Caribe Colombiano"
+            style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
+        <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: -1;"></div>
+        <div class="container">
+            <h1 style="color: white; font-size: 56px;">Caribe Colombiano</h1>
+            <p style="font-size: 20px; max-width: 600px; margin: 16px auto;">La magia del mar de los siete colores y la
+                herencia colonial de Cartagena.</p>
+        </div>
+    </header>
+
+    <section>
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 64px;">
+                <div class="destination-content">
+                    <h2>Sobre el Caribe Colombiano</h2>
+                    <p style="font-size: 18px; line-height: 1.8; color: var(--text-muted); margin-top: 24px;">
+                        El Caribe Colombiano es una mezcla vibrante de historia, naturaleza y playas paradisíacas. Desde
+                        la joya colonial que es Cartagena de Indias hasta la biodiversidad del Parque Tayrona y la
+                        serenidad de las Islas del Rosario, este destino ofrece algo para cada tipo de viajero.
+                    </p>
+                    <div style="margin-top: 48px;">
+                        <h3>Lo que no te puedes perder:</h3>
+                        <ul
+                            style="margin-top: 24px; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                            <li style="display: flex; align-items: center; gap: 12px;"><span
+                                    class="material-symbols-outlined"
+                                    style="color: var(--secondary);">beach_access</span> Islas del Rosario</li>
+                            <li style="display: flex; align-items: center; gap: 12px;"><span
+                                    class="material-symbols-outlined" style="color: var(--secondary);">castle</span>
+                                Castillo de San Felipe</li>
+                            <li style="display: flex; align-items: center; gap: 12px;"><span
+                                    class="material-symbols-outlined" style="color: var(--secondary);">restaurant</span>
+                                Gastronomía Local</li>
+                            <li style="display: flex; align-items: center; gap: 12px;"><span
+                                    class="material-symbols-outlined"
+                                    style="color: var(--secondary);">scuba_diving</span> Buceo en Corales</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sidebar"
+                    style="background: white; border: 1px solid var(--border); padding: 32px; border-radius: var(--radius-lg); height: fit-content;">
+                    <h3>Planes Relacionados</h3>
+                    <div style="margin-top: 24px;">
+                        <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border);">
+                            <p style="font-weight: 700; color: var(--primary);">Cartagena Mágica</p>
+                            <p style="font-size: 14px; color: var(--text-muted);">4 Días / $1,250,000</p>
+                        </div>
+                        <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border);">
+                            <p style="font-weight: 700; color: var(--primary);">Tour Islas Privadas</p>
+                            <p style="font-size: 14px; color: var(--text-muted);">2 Días / $850,000</p>
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="width: 100%;">Cotizar ahora</button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="destinations-grid">
+                <a href="caribe.html" class="destination-card">
+                    <img src="assets/cartagena-colombia.png" alt="Caribe Colombiano">
+                    <div class="destination-overlay">
+                        <h3>Cartagena de Indias</h3>
+                        <p>Descubre la ciudad amurallada y sus islas paradisíacas.</p>
+                    </div>
+                </a>
+                <a href="cancun.html" class="destination-card">
+                    <img src="assets/santa-marta.png" alt="Cancún">
+                    <div class="destination-overlay">
+                        <h3>Santa Marta</h3>
+                        <p>El balance perfecto entre naturaleza y aventura.</p>
+                    </div>
+                </a>
+                <a href="punta-cana.html" class="destination-card">
+                    <img src="assets/san-andres.png" alt="Punta Cana">
+                    <div class="destination-overlay">
+                        <h3>San Andrés</h3>
+                        <p>El paraíso de las aguas cristalinas y la cultura raizal.</p>
+                    </div>
+                </a>
+                <!-- More destinations can be added here -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a href="#" class="logo" style="color: var(--white); margin-bottom: 24px; display: flex;">
+                        <span class="material-symbols-outlined">explore</span>
+                        SmartTrip
+                    </a>
+                    <p>Líderes en tecnología aplicada al turismo. Haciendo que viajar sea tan fácil como dar un click.
+                    </p>
+                </div>
+                <div>
+                    <h4>Destinos</h4>
+                    <ul class="footer-links">
+                        <li><a href="caribe.html">Caribe Colombiano</a></li>
+                        <li><a href="cancun.html">Cancún</a></li>
+                        <li><a href="punta-cana.html">Punta Cana</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Compañía</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">Sobre Nosotros</a></li>
+                        <li><a href="how-it-works.html">Cómo funciona</a></li>
+                        <li><a href="support.html">Asistencia</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61587732822773" target="_blank"
+                            title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com/smarttripc" target="_blank" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 SmartTrip Colombia. Todos los derechos reservados.</p>
+                <p>Desarrollado por MVP Solutions SAS.</p>
+                <p>RNT #123456</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
