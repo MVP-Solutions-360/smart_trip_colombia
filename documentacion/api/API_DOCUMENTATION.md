@@ -500,69 +500,7 @@ GET /v1/client/profile
 }
 ```
 
-#### **2. Cotizaciones del Cliente**
-```
-GET /v1/client/quotations
-```
-**Headers requeridos:**
-- `Authorization: Bearer {token}`
-- `Accept: application/json`
-
-**Respuesta exitosa (200):**
-```json
-{
-    "success": true,
-    "data": [
-        {
-            "id": 1,
-            "reference_number": "COT-2024-001",
-            "service_type": "vuelos",
-            "destination": "Cartagena",
-            "departure_date": "2024-06-15",
-            "return_date": "2024-06-20",
-            "passengers": 2,
-            "budget_range": "1000000-2000000",
-            "status": "En proceso",
-            "created_at": "2024-01-15T10:30:00Z"
-        }
-    ]
-}
-```
-
-#### **3. Detalle de Cotización**
-```
-GET /v1/client/quotations/{id}
-```
-**Headers requeridos:**
-- `Authorization: Bearer {token}`
-- `Accept: application/json`
-
-**Parámetros:**
-- `id` (path): ID de la cotización
-
-**Respuesta exitosa (200):**
-```json
-{
-    "success": true,
-    "data": {
-        "id": 1,
-        "reference_number": "COT-2024-001",
-        "service_type": "vuelos",
-        "destination": "Cartagena",
-        "departure_date": "2024-06-15",
-        "return_date": "2024-06-20",
-        "passengers": 2,
-        "budget_range": "1000000-2000000",
-        "special_requirements": "Habitación con vista al mar",
-        "status": "En proceso",
-        "notes": "Cotización en revisión por asesor",
-        "created_at": "2024-01-15T10:30:00Z",
-        "updated_at": "2024-01-16T14:20:00Z"
-    }
-}
-```
-
-#### **4. Logout del Cliente**
+#### **2. Logout del Cliente**
 ```
 POST /v1/client/logout
 ```
@@ -575,6 +513,141 @@ POST /v1/client/logout
 {
     "success": true,
     "message": "Logout exitoso"
+}
+```
+
+---
+
+## 👤 API PORTAL DEL CLIENTE
+
+Estos endpoints permiten al cliente autenticado visualizar sus cotizaciones, servicios y estado de viaje desde el portal del viajero.
+
+Todas las rutas requieren autenticación mediante Sanctum.
+
+**Headers requeridos:**
+- `Authorization: Bearer {token}`
+- `Accept: application/json`
+
+---
+
+### 🔐 Flujo de Autenticación Cliente
+
+1. **Login del cliente**
+   `POST /v1/client/login`
+2. **Obtener cotizaciones del cliente**
+   `GET /v1/client/quotations`
+3. **Obtener detalle de cotización**
+   `GET /v1/client/quotations/{id}`
+4. **Obtener servicios de la cotización**
+   `GET /v1/client/quotations/{id}/services`
+5. **Obtener detalle completo del viaje**
+   `GET /v1/client/trip/{slug}`
+
+---
+
+### 🗺 CLIENT PORTAL FLOW
+
+```text
+Login
+  ↓
+GET /client/quotations
+  ↓
+GET /client/trip/{slug}
+  ↓
+Mostrar dashboard del viaje
+```
+
+---
+
+### ⚙️ Ejemplo configuración Postman
+
+**Base URL:**
+`http://localhost/api/v1`
+
+**Headers:**
+- `Authorization: Bearer {token}`
+- `Accept: application/json`
+
+---
+
+### 🗂 ENDPOINTS DEL PORTAL
+
+#### **1. Listar cotizaciones**
+```
+GET /v1/client/quotations
+```
+
+#### **2. Cotización específica**
+```
+GET /v1/client/quotations/{id}
+```
+
+#### **3. Servicios de la cotización**
+```
+GET /v1/client/quotations/{id}/services
+```
+
+#### **4. Servicios específicos**
+```
+GET /v1/client/quotations/{id}/services/tickets
+GET /v1/client/quotations/{id}/services/hotels
+GET /v1/client/quotations/{id}/services/transfers
+GET /v1/client/quotations/{id}/services/medical-assists
+```
+
+#### **5. Detalle del Viaje**
+```
+GET /v1/client/trip/{slug}
+```
+**Descripción:**
+Obtiene toda la información del viaje del cliente, incluyendo:
+- datos del viaje
+- asesor asignado
+- servicios cotizados
+- tareas asociadas
+- pagos
+- totales
+
+**Headers:**
+- `Authorization: Bearer {token}`
+- `Accept: application/json`
+
+**Ejemplo Request:**
+```
+GET /v1/client/trip/plan-turistico-madrid-es-PNj633aO
+```
+
+**Ejemplo Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "trip": {
+      "id": 243,
+      "slug": "plan-turistico-madrid-es-PNj633aO",
+      "destination": "Madrid (ES)",
+      "departure_date": "2026-03-31",
+      "return_date": "2026-04-11",
+      "status": "En proceso"
+    },
+    "advisor": null,
+    "services": {
+      "tickets": [],
+      "hotels": [],
+      "transfers": [],
+      "medical_assists": []
+    },
+    "tasks": [],
+    "payments": {
+      "client_payments": [],
+      "total_paid": 0
+    },
+    "totals": {
+      "quoted": 0,
+      "sold": 0,
+      "discarded": 0
+    }
+  }
 }
 ```
 

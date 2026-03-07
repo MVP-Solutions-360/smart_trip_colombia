@@ -231,6 +231,13 @@ class CRMConnector {
     async getQuotationServices(quotationId) {
         return await this._request(`/client/quotations/${quotationId}/services`, { method: 'GET' });
     }
+
+    /**
+     * Obtener detalle completo del viaje por slug
+     */
+    async getTripDetails(slug) {
+        return await this._request(`/client/trip/${slug}`, { method: 'GET' });
+    }
 }
 
 // Exportar instancia única para uso global
