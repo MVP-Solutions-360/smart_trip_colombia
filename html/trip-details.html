@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Detalle del Viaje - SmartTrip Colombia</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1773cf",
+                        "secondary": "#26c6da",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111921",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .active-nav {
+            background-color: rgba(23, 115, 207, 0.1);
+            color: #1773cf;
+            border-left: 4px solid #1773cf;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(200, 200, 200, 0.1) 25%, rgba(200, 200, 200, 0.2) 50%, rgba(200, 200, 200, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+    <script src="../crm-service.js?v=v16-backend-fixed"></script>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside
+            class="hidden lg:flex w-64 flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 fixed h-full z-40">
+            <div class="p-6 flex items-center gap-3">
+                <div class="bg-primary p-2 rounded-lg">
+                    <span class="material-symbols-outlined text-white">travel_explore</span>
+                </div>
+                <div>
+                    <h1 class="text-primary font-bold text-lg leading-tight">SmartTrip</h1>
+                    <p class="text-xs text-slate-500 font-medium">Colombia Edition</p>
+                </div>
+            </div>
+            <nav class="mt-6 px-4 space-y-2 flex-1">
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
+                    href="../dashboard.html">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="font-semibold text-sm">Panel</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg active-nav" href="my-trips.html">
+                    <span class="material-symbols-outlined">map</span>
+                    <span class="font-semibold text-sm">Mis viajes</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
+                    href="#">
+                    <span class="material-symbols-outlined">description</span>
+                    <span class="font-semibold text-sm">Documentos</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
+                    href="#">
+                    <span class="material-symbols-outlined">support_agent</span>
+                    <span class="font-semibold text-sm">Soporte</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-Slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
+                    href="../index.html">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="font-semibold text-sm">Volver al Sitio</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-red-500 transition-colors hover:bg-red-100"
+                    href="#" id="logoutBtn">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-semibold text-sm">Cerrar Sesión</span>
+                </a>
+            </nav>
+            <div class="p-6 border-t border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div id="userAvatar" class="size-10 rounded-full bg-slate-200 bg-cover bg-center"
+                        style="background-image: url('https://ui-avatars.com/api/?name=User')"></div>
+                    <div>
+                        <p class="text-sm font-bold truncate w-32" id="userName">Cargando...</p>
+                        <p class="text-xs text-slate-500" id="userBadge">Nivel 1</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 lg:ml-64 flex flex-col min-h-screen">
+            <!-- HEADER -->
+            <header
+                class="sticky top-0 z-30 flex items-center justify-between px-4 lg:px-8 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-4">
+                    <span class="material-symbols-outlined text-slate-600 lg:hidden cursor-pointer"
+                        id="mobileMenuBtn">menu</span>
+                    <button onclick="window.history.back()"
+                        class="text-slate-500 hover:text-primary transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        <span class="font-bold hidden sm:block">Atrás</span>
+                    </button>
+                    <div class="h-6 w-px bg-slate-300 dark:bg-slate-700 mx-2"></div>
+                    <h1 class="text-lg font-black tracking-tight flex items-center gap-2">
+                        Detalle del Viaje
+                    </h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="lg:hidden size-8 rounded-full bg-cover bg-center ring-2 ring-slate-100"
+                        id="userMobileAvatar" style="background-image: url('https://ui-avatars.com/api/?name=User')">
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 lg:p-8 space-y-8 pb-32 max-w-7xl mx-auto w-full">
+                <!-- LOADER VIEW -->
+                <div id="loaderView" class="space-y-8">
+                    <div class="h-64 rounded-[2.5rem] skeleton w-full"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="h-40 rounded-3xl skeleton w-full"></div>
+                        <div class="h-40 rounded-3xl skeleton w-full"></div>
+                    </div>
+                </div>
+
+                <!-- ERROR VIEW -->
+                <div id="errorView" class="hidden flex-col items-center justify-center py-20 text-center">
+                    <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">sentiment_dissatisfied</span>
+                    <h2 class="text-2xl font-bold mb-2">No se encontró el viaje</h2>
+                    <p class="text-slate-500 mb-6" id="errorMessage">No pudimos cargar la información solicitada.</p>
+                    <button onclick="window.history.back()"
+                        class="bg-primary text-white font-bold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30">Volver
+                        a Mis Viajes</button>
+                </div>
+
+                <!-- CONTENT VIEW -->
+                <div id="contentView" class="hidden space-y-8">
+
+                    <!-- HERO SECTION -->
+                    <div
+                        class="relative overflow-hidden rounded-[2.5rem] bg-slate-900 shadow-xl group md:h-80 h-64 flex items-end">
+                        <div id="tripHeroBg"
+                            class="absolute inset-0 bg-cover bg-center opacity-70 transition-transform duration-1000 group-hover:scale-105"
+                            style="background-image: url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1500')">
+                        </div>
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 text-white flex flex-col justify-end p-8">
+                            <div class="flex sm:flex-row flex-col sm:items-end justify-between gap-4">
+                                <div>
+                                    <span id="tripStatusBadge"
+                                        class="bg-blue-600 uppercase tracking-widest text-[10px] font-black px-3 py-1 rounded-full mb-3 inline-block shadow-lg">CARGANDO</span>
+                                    <h1 id="tripDestination"
+                                        class="text-3xl md:text-5xl font-black text-white drop-shadow-md">Destino</h1>
+                                    <p id="tripRef" class="text-slate-300 font-bold mt-2 text-sm">Ref: ------</p>
+                                </div>
+                                <div
+                                    class="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-3xl text-center min-w-[140px]">
+                                    <p class="text-xs uppercase font-bold text-slate-300 mb-1">Precio Total</p>
+                                    <p id="tripPrice" class="text-2xl font-black text-white">Por definir</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                        <!-- LEFT COL: SUMMARY & SERVICES -->
+                        <div class="space-y-8 lg:col-span-2">
+                            <!-- FECHAS Y DATOS CLAVE -->
+                            <div
+                                class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-8 justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="size-14 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center mt-1">
+                                        <span class="material-symbols-outlined text-3xl">flight_takeoff</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-400 mb-1 uppercase tracking-wider">Salida
+                                        </p>
+                                        <p id="tripDepartureDate" class="text-xl font-bold">--</p>
+                                    </div>
+                                </div>
+
+                                <div class="hidden md:flex flex-1 items-center justify-center opacity-30">
+                                    <div class="h-px bg-slate-400 w-full rounded-full"></div>
+                                    <span
+                                        class="material-symbols-outlined px-2 text-slate-400 mx-2">arrow_forward</span>
+                                    <div class="h-px bg-slate-400 w-full rounded-full"></div>
+                                </div>
+
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="size-14 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 flex items-center justify-center mt-1">
+                                        <span class="material-symbols-outlined text-3xl">flight_land</span>
+                                    </div>
+                                    <div class="md:text-right">
+                                        <p class="text-sm font-bold text-slate-400 mb-1 uppercase tracking-wider">
+                                            Regreso</p>
+                                        <p id="tripReturnDate" class="text-xl font-bold">--</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SERVICIOS INCLUIDOS -->
+                            <div>
+                                <h3 class="text-xl font-black mb-6">Servicios de tu Viaje</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="servicesGrid">
+                                    <!-- Cards rendered by JS -->
+                                </div>
+                            </div>
+
+                            <!-- DESGLOSE DE TAREAS / ITINERARIO -->
+                            <div>
+                                <h3 class="text-xl font-black mb-6">Itinerario y Tareas Relacionadas</h3>
+                                <div
+                                    class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+                                    <div id="tasksList" class="space-y-6">
+                                        <!-- Tareas renderizadas -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COL: ADVISOR & TOTALS -->
+                        <div class="space-y-8 lg:col-span-1">
+                            <!-- RESUMEN FINANCIERO -->
+                            <div class="bg-slate-900 text-white rounded-3xl p-8 shadow-xl relative overflow-hidden">
+                                <!-- Deco -->
+                                <div
+                                    class="absolute -right-10 -top-10 size-40 bg-primary rounded-full blur-3xl opacity-20 pointer-events-none">
+                                </div>
+
+                                <h3 class="text-lg font-bold text-slate-300 mb-6 flex items-center gap-2">
+                                    <span class="material-symbols-outlined">payments</span> Resumen Financiero
+                                </h3>
+
+                                <div class="space-y-4 font-medium mb-6">
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="text-slate-400">Total Cotizado</span>
+                                        <span id="financialQuoted" class="font-bold text-lg">$0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="text-slate-400">Total Pagado</span>
+                                        <span id="financialPaid" class="font-bold text-emerald-400 text-lg">$0</span>
+                                    </div>
+                                </div>
+
+                                <div class="h-px w-full bg-slate-700 my-6"></div>
+
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-bold text-slate-300 uppercase tracking-wider">Saldo
+                                        Pendiente</span>
+                                    <span id="financialBalance" class="text-3xl font-black text-white">$0</span>
+                                </div>
+
+                                <button
+                                    class="w-full mt-8 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transition-colors flex justify-center items-center gap-2">
+                                    Hacer un pago <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                                </button>
+                            </div>
+
+                            <!-- ADVISOR ASIGNADO -->
+                            <div
+                                class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm">
+                                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-6">Asesor
+                                    Asignado</h3>
+                                <div id="advisorContainer" class="flex items-center gap-4">
+                                    <div class="size-16 rounded-full bg-slate-200 flex items-center justify-center">
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 text-2xl">person_off</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-black text-lg">Sin Asignar</p>
+                                        <p class="text-sm text-slate-500 font-medium">Pronto un asesor tomará tu
+                                            solicitud.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BOTON SOPORTE -->
+                            <button
+                                class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-4 rounded-2xl transition-colors border border-slate-200 dark:border-slate-700 flex justify-center items-center gap-2">
+                                <span class="material-symbols-outlined">help</span> Necesito Ayuda con este Viaje
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- SERVICE MODAL -->
+        <div id="serviceModal"
+            class="fixed inset-0 z-[100] hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 transition-all">
+            <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] scale-95 opacity-0 transition-all duration-300 transform"
+                id="serviceModalBody">
+                <div
+                    class="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                    <h3 class="text-xl font-black flex items-center gap-3">
+                        <div
+                            class="size-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
+                            <span id="serviceModalIcon" class="material-symbols-outlined">flight</span>
+                        </div>
+                        <span id="serviceModalTitle" class="text-slate-800 dark:text-slate-100">Servicio</span>
+                    </h3>
+                    <button onclick="closeServiceModal()"
+                        class="size-10 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div id="serviceModalContent" class="p-8 overflow-y-auto flex-1 space-y-4 bg-white dark:bg-slate-900">
+                    <!-- Contenido renderizado por JS -->
+                </div>
+                <div
+                    class="p-6 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-right">
+                    <button onclick="closeServiceModal()"
+                        class="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold px-6 py-3 rounded-xl hover:scale-105 transition-transform">Cerrar
+                        Detalle</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Formateador de moneda (Asumiendo que sea en el frontend, USD o COP local)
+        const formatMoney = (amount) => {
+            if (amount === undefined || amount === null) amount = 0;
+            return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(amount);
+        };
+
+        const formatDate = (dateStr) => {
+            if (!dateStr) return 'Por definir';
+            const date = new Date(dateStr);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('es-ES', options);
+        };
+
+        const getStatusColor = (status) => {
+            const s = (status || '').toLowerCase();
+            if (s.includes('venta') || s.includes('viajando') || s.includes('activo')) return 'bg-blue-600';
+            if (s.includes('proceso') || s.includes('cotizado')) return 'bg-emerald-600';
+            if (s.includes('pasado') || s.includes('finalizado')) return 'bg-slate-600';
+            return 'bg-secondary';
+        };
+
+        // Modal de Servicios logic
+        window.openServiceModal = (key, title, icon) => {
+            const modal = document.getElementById('serviceModal');
+            const body = document.getElementById('serviceModalBody');
+            document.getElementById('serviceModalIcon').innerText = icon;
+            document.getElementById('serviceModalTitle').innerText = title;
+
+            const content = document.getElementById('serviceModalContent');
+            content.innerHTML = '';
+
+            const items = window.currentServicesLinkedToTrip[key] || [];
+
+            if (items.length === 0) {
+                content.innerHTML = '<div class="text-center py-10 font-medium text-slate-500">No hay información detallada disponible.</div>';
+            } else {
+                items.forEach((item, index) => {
+                    let htmlStr = `<div class="p-6 border border-slate-200 dark:border-slate-700/50 rounded-2xl bg-white dark:bg-slate-800/80 mb-4 transition-all hover:border-blue-300 dark:hover:border-blue-700 shadow-sm hover:shadow-md group">
+                        <h4 class="font-black text-lg mb-4 flex items-center gap-2 text-slate-800 dark:text-slate-100 group-hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-lg text-primary">label</span> 
+                            Detalle #${index + 1}
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">`;
+
+                    Object.entries(item).forEach(([k, v]) => {
+                        if (v && typeof v !== 'object' && !['id', 'created_at', 'updated_at', 'request_id', 'deleted_at'].includes(k)) {
+                            const cleanKey = k.replace(/_/g, ' ').toUpperCase();
+                            htmlStr += `<div><span class="font-bold tracking-widest text-slate-400 text-[10px] block mb-0.5">${cleanKey}</span> <span class="text-slate-700 dark:text-slate-200 font-semibold break-words">${v}</span></div>`;
+                        }
+                    });
+
+                    htmlStr += `</div></div>`;
+                    content.innerHTML += htmlStr;
+                });
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                body.classList.remove('scale-95', 'opacity-0');
+                body.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
+
+        window.closeServiceModal = () => {
+            const modal = document.getElementById('serviceModal');
+            const body = document.getElementById('serviceModalBody');
+            body.classList.remove('scale-100', 'opacity-100');
+            body.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Menú móvil
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.querySelector('aside');
+
+            if (mobileMenuBtn && sidebar) {
+                mobileMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('hidden');
+                    sidebar.classList.toggle('flex');
+                    sidebar.classList.toggle('z-[60]');
+                    sidebar.classList.toggle('shadow-2xl');
+                });
+                document.addEventListener('click', (e) => {
+                    if (sidebar.classList.contains('z-[60]') && !sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                        sidebar.classList.add('hidden');
+                        sidebar.classList.remove('flex', 'z-[60]', 'shadow-2xl');
+                    }
+                });
+            }
+
+            // Iniciar CRM Service
+            window.CRM = new CRMConnector();
+
+            // Actualizar usuario en Sidebar superior
+            const localProfileRaw = localStorage.getItem('crm_user_profile');
+            if (localProfileRaw) {
+                const user = JSON.parse(localProfileRaw);
+                const name = user.name || user.first_name || "Viajero";
+                document.getElementById('userName').innerText = name;
+                document.getElementById('userAvatar').style.backgroundImage = `url('https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1773cf&color=fff')`;
+                if (user.roles && user.roles.length > 0) {
+                    document.getElementById('userBadge').innerText = user.roles[0].name;
+                }
+            }
+
+            // OBTENER EL SLUG DE LA URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+
+            const loaderView = document.getElementById('loaderView');
+            const errorView = document.getElementById('errorView');
+            const contentView = document.getElementById('contentView');
+
+            if (!slug) {
+                loaderView.style.display = 'none';
+                errorView.classList.replace('hidden', 'flex');
+                document.getElementById('errorMessage').innerText = 'No se proporcionó un identificador válido para visualizar el viaje.';
+                return;
+            }
+
+            try {
+                // Hacer el fetch de Trip
+                console.log(`Buscando viaje con slug: ${slug}...`);
+                const response = await window.CRM.getTripDetails(slug);
+                console.log("Respuesta completa del Viaje:", response);
+
+                const data = response.data || response;
+
+                // Si viene dentro de `trip` o de `quotation` (dependiendo del endpoint que haya respondido)
+                const tripData = data.trip || data.quotation || data;
+
+                loaderView.style.display = 'none';
+                contentView.classList.remove('hidden');
+
+                // RENDERIZAR DATOS BASE (HERO & FECHAS)
+                document.getElementById('tripDestination').innerText = tripData.destination || 'Viaje por el Mundo';
+                document.getElementById('tripRef').innerText = `Ref: ${tripData.slug || tripData.reference_number || tripData.id}`;
+
+                let tripStatus = tripData.status || 'En Planeación';
+                const statusBadge = document.getElementById('tripStatusBadge');
+                statusBadge.innerText = tripStatus;
+                statusBadge.className = `uppercase tracking-widest text-[10px] font-black px-3 py-1 rounded-full mb-3 inline-block shadow-lg text-white ${getStatusColor(tripStatus)}`;
+
+                document.getElementById('tripDepartureDate').innerText = formatDate(tripData.departure_date);
+                document.getElementById('tripReturnDate').innerText = formatDate(tripData.return_date);
+
+                // RENDERIZAR VALORES (Sección Financiera)
+                const totalsData = data.totals || tripData.totals || {};
+                const totalQuoted = parseFloat(totalsData.quoted) || 0;
+
+                const paymentsData = data.payments || tripData.payments || {};
+                const totalPaid = parseFloat(paymentsData.total_paid) || 0;
+
+                let balance = totalQuoted - totalPaid;
+                if (balance < 0) balance = 0; // Prevenir negativos confusos visualmente
+
+                document.getElementById('tripPrice').innerText = totalQuoted > 0 ? formatMoney(totalQuoted) : 'Por cotizar';
+                document.getElementById('financialQuoted').innerText = formatMoney(totalQuoted);
+                document.getElementById('financialPaid').innerText = formatMoney(totalPaid);
+                document.getElementById('financialBalance').innerText = formatMoney(balance);
+
+                // Color amigable en caso de estar pago
+                if (balance === 0 && totalQuoted > 0) {
+                    document.getElementById('financialBalance').classList.replace('text-white', 'text-emerald-400');
+                    document.getElementById('financialBalance').innerText = 'PAGADO';
+                }
+
+                // RENDERIZAR SERVICIOS INCLUIDOS
+                let servicesData = data.services || tripData.services || {};
+
+                // Si services data parece estar vacío (arreglos en 0), vamos a forzar la petición específica
+                let totalFlights = Array.isArray(servicesData.tickets) ? servicesData.tickets.length : 0;
+                let totalHotels = Array.isArray(servicesData.hotels) ? servicesData.hotels.length : 0;
+                let totalTransfers = Array.isArray(servicesData.transfers) ? servicesData.transfers.length : 0;
+                let totalMedicals = Array.isArray(servicesData.medical_assists) ? servicesData.medical_assists.length : 0;
+                let totalTours = Array.isArray(servicesData.tours) ? servicesData.tours.length : 0;
+
+                if (totalFlights === 0 && totalHotels === 0 && totalTransfers === 0 && totalMedicals === 0 && totalTours === 0 && tripData.id) {
+                    try {
+                        // Extraer uno por uno para asegurar que mapeen bajo request_id
+                        const fetchServ = async (path) => {
+                            try {
+                                const r = await window.CRM._request(`/client/quotations/${tripData.id}/services/${path}`, { method: 'GET' });
+                                return Array.isArray(r.data) ? r.data : (Array.isArray(r) ? r : []);
+                            } catch (err) { return []; }
+                        };
+
+                        servicesData.tickets = await fetchServ('tickets');
+                        servicesData.hotels = await fetchServ('hotels');
+                        servicesData.transfers = await fetchServ('transfers');
+                        servicesData.medical_assists = await fetchServ('medical-assists');
+                        servicesData.tours = await fetchServ('tours');
+
+                        // Guardar la referencia global para la modal de servicios
+                        window.currentServicesLinkedToTrip = servicesData;
+
+                        // Recalcular totals
+                        totalFlights = servicesData.tickets.length;
+                        totalHotels = servicesData.hotels.length;
+                        totalTransfers = servicesData.transfers.length;
+                        totalMedicals = servicesData.medical_assists.length;
+                        totalTours = servicesData.tours.length;
+                    } catch (e) {
+                        console.warn('No se pudieron obtener servicios extendidos', e);
+                    }
+                }
+
+                const srvGrid = document.getElementById('servicesGrid');
+                srvGrid.innerHTML = '';
+
+                const drawServiceCard = (key, icon, title, count, colorClass) => {
+                    const isActive = count > 0;
+                    const opacity = isActive ? 'opacity-100 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-white dark:hover:bg-slate-800 hover:scale-[1.03] cursor-pointer shadow-sm hover:shadow-lg' : 'opacity-40 grayscale cursor-not-allowed';
+                    const clickAction = isActive ? `onclick="openServiceModal('${key}', '${title}', '${icon}')"` : '';
+
+                    return `
+                    <div ${clickAction} class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 text-center flex flex-col items-center justify-center transition-all duration-300 ${opacity}">
+                        <span class="material-symbols-outlined ${colorClass} text-3xl mb-2">${icon}</span>
+                        <h4 class="font-bold text-sm leading-tight mb-1 text-slate-800 dark:text-slate-200">${title}</h4>
+                        <span class="text-xs font-bold text-slate-500 bg-white dark:bg-slate-900 px-3 py-1 rounded-full mt-2 shadow-sm border border-slate-200 dark:border-slate-700">${count} Ítem(s)</span>
+                    </div>`;
+                };
+
+                // Guardar la referencia global también si no entró al try catch
+                window.currentServicesLinkedToTrip = servicesData;
+
+                srvGrid.innerHTML += drawServiceCard('tickets', 'flight', 'Vuelos', totalFlights, 'text-blue-500');
+                srvGrid.innerHTML += drawServiceCard('hotels', 'hotel', 'Hospedaje', totalHotels, 'text-purple-500');
+                srvGrid.innerHTML += drawServiceCard('transfers', 'directions_car', 'Traslados', totalTransfers, 'text-emerald-500');
+                srvGrid.innerHTML += drawServiceCard('tours', 'tour', 'Tours/Actividades', totalTours, 'text-orange-500');
+                srvGrid.innerHTML += drawServiceCard('medical_assists', 'medical_services', 'Asistencia', totalMedicals, 'text-primary');
+
+                // RENDERIZAR TAREAS (Itinerario visual base)
+                const tasksContainer = document.getElementById('tasksList');
+                tasksContainer.innerHTML = '';
+                const tasks = data.tasks || tripData.tasks || [];
+
+                if (tasks.length === 0) {
+                    tasksContainer.innerHTML = `
+                        <div class="text-center py-8">
+                            <span class="material-symbols-outlined text-4xl text-slate-300 mb-2">event_busy</span>
+                            <p class="text-slate-500 font-medium">Aún no hay etapas o eventos documentados para este viaje.</p>
+                        </div>
+                    `;
+                } else {
+                    tasks.forEach(t => {
+                        const isDone = (t.status || '').toLowerCase() === 'completed' || (t.state || '').toLowerCase() === 'finalizado';
+
+                        tasksContainer.innerHTML += `
+                        <div class="flex gap-4 group">
+                            <div class="flex flex-col items-center mt-1">
+                                <div class="size-6 rounded-full border-2 flex items-center justify-center transition-colors 
+                                    ${isDone ? 'border-emerald-500 bg-emerald-50' : 'border-blue-500 bg-white dark:bg-slate-900'}">
+                                    ${isDone ? '<span class="material-symbols-outlined text-xs text-emerald-600 font-black">check</span>' : '<div class="size-2 rounded-full bg-blue-500"></div>'}
+                                </div>
+                                <div class="w-px h-full bg-slate-200 dark:bg-slate-800 my-1 group-last:hidden"></div>
+                            </div>
+                            <div class="pb-6 flex-1">
+                                <span class="text-[10px] uppercase font-black tracking-widest text-slate-400 mb-1 block">${formatDate(t.created_at)}</span>
+                                <div class="bg-slate-50 dark:bg-slate-800/30 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 group-hover:border-blue-200 dark:group-hover:border-blue-900 transition-colors">
+                                    <h5 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-1">${t.title || 'Evento/Tarea del Viaje'}</h5>
+                                    <p class="text-sm text-slate-500 leading-relaxed">${t.description || 'Detalles no proporcionados'}</p>
+                                    <div class="flex items-center gap-4 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700/50">
+                                        <div class="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                                            <span class="material-symbols-outlined text-sm">person</span>
+                                            ${t.assigned_by || 'Sistema'}
+                                        </div>
+                                        <div class="bg-slate-200 dark:bg-slate-700 px-2.5 py-1 rounded text-[10px] uppercase font-black text-slate-500 dark:text-slate-300">
+                                            ${t.state || t.status || 'Activo'}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                }
+
+                // RENDERIZAR ADVISOR
+                const advisor = data.advisor || tripData.advisor;
+                if (advisor && advisor.name) {
+                    const advContainer = document.getElementById('advisorContainer');
+                    const photo = `https://ui-avatars.com/api/?name=${encodeURIComponent(advisor.name)}&background=26c6da&color=fff`;
+                    advContainer.innerHTML = `
+                        <div class="size-16 rounded-full bg-cover bg-center border-4 border-slate-100 dark:border-slate-800 shadow-sm" style="background-image: url('${photo}')"></div>
+                        <div>
+                            <p class="font-black text-lg text-slate-900 dark:text-white">${advisor.name}</p>
+                            <p class="text-xs font-bold text-primary uppercase tracking-widest mt-0.5">${advisor.position || 'Asesor Especialista'}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <a href="mailto:${advisor.email}" class="text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]">mail</span></a>
+                                ${advisor.phone ? `<a href="tel:${advisor.phone}" class="text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]">call</span></a>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                console.error("Error al cargar detalles del viaje:", error);
+                loaderView.style.display = 'none';
+                errorView.classList.replace('hidden', 'flex');
+                if (error.status === 404) {
+                    document.getElementById('errorMessage').innerText = 'El viaje que buscas no existe o fue cancelado.';
+                } else if (error.status === 401) {
+                    document.getElementById('errorMessage').innerText = 'Inicia sesión nuevamente para visualizar este viaje.';
+                } else {
+                    document.getElementById('errorMessage').innerText = `Ocurrió un error en nuestros sistemas: ${error.message || 'Desconocido'}`;
+                }
+            }
+
+            document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.CRM.logout();
+                window.location.href = '../login.html';
+            });
+        });
+    </script>
+</body>
+
+</html>

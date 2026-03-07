@@ -233,10 +233,24 @@ class CRMConnector {
     }
 
     /**
-     * Obtener detalle completo del viaje por slug
+     * Obtener detalle completo del viaje por slug o ID de cotización
      */
-    async getTripDetails(slug) {
-        return await this._request(`/client/trip/${slug}`, { method: 'GET' });
+    async getTripDetails(identifier) {
+        // Limpiar en caso de que el front haya enviado "trip-123" en lugar del puro ID
+        if (identifier && typeof identifier === 'string' && identifier.startsWith('trip-')) {
+            identifier = identifier.replace('trip-', '');
+        }
+
+        // Verificar si contiene solo números
+        const isNumeric = /^\d+$/.test(identifier);
+
+        if (isNumeric) {
+            // Si Laravel no nos mandó el slug y solo tenemos el ID, usamos el endpoint de quotations get by ID
+            return await this._request(`/client/quotations/${identifier}`, { method: 'GET' });
+        } else {
+            // Si tenemos el slug de verdad (ej. "plan-turistico-madrid")
+            return await this._request(`/client/trip/${identifier}`, { method: 'GET' });
+        }
     }
 }
 
