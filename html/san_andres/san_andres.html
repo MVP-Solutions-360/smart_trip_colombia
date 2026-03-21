@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Andrés Islas | SmartTrip Colombia</title>
+    <meta name="description"
+        content="Descubre San Andrés Islas con SmartTrip Colombia. El mar de los siete colores, playas paradisíacas y arrecifes únicos del Caribe colombiano.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../../index.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dest-hero {
+            position: relative;
+            height: 520px;
+            background: var(--primary);
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end
+        }
+
+        .dest-hero-placeholder {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #032442 0%, #0a4f6e 50%, #00c8a022 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase
+        }
+
+        .dest-hero-placeholder .material-symbols-outlined {
+            font-size: 64px;
+            opacity: .3
+        }
+
+        .dest-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(3, 36, 66, .9) 0%, rgba(3, 36, 66, .1) 60%, transparent 100%)
+        }
+
+        .dest-hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 40px 24px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto
+        }
+
+        .dest-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--secondary);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+
+        .dest-hero-content h1 {
+            color: #fff;
+            font-size: 56px;
+            line-height: 1.05;
+            margin-bottom: 12px
+        }
+
+        .dest-hero-content>p {
+            color: rgba(255, 255, 255, .75);
+            font-size: 18px;
+            max-width: 520px;
+            margin-bottom: 28px
+        }
+
+        .dest-meta {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap
+        }
+
+        .dest-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, .8);
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        .dest-meta .material-symbols-outlined {
+            font-size: 18px;
+            color: var(--secondary)
+        }
+
+        /* Carrusel */
+        .carousel-section {
+            background: var(--primary);
+            padding: 0 0 64px
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px
+        }
+
+        .carousel-track-container {
+            overflow: hidden;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, .4)
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform .5s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            aspect-ratio: 16/7;
+            position: relative;
+            overflow: hidden
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .slide-ph {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background: linear-gradient(135deg, #032442, #0a4f6e);
+            color: rgba(255, 255, 255, .3)
+        }
+
+        .slide-ph .material-symbols-outlined {
+            font-size: 72px
+        }
+
+        .slide-ph p {
+            font-size: 14px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 600
+        }
+
+        .slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 28px;
+            background: linear-gradient(to top, rgba(3, 36, 66, .9), transparent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px
+        }
+
+        .carousel-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px
+        }
+
+        .c-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, .2);
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s ease
+        }
+
+        .c-btn:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            color: var(--primary);
+            transform: scale(1.08)
+        }
+
+        .c-dots {
+            display: flex;
+            gap: 8px
+        }
+
+        .c-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .3);
+            cursor: pointer;
+            transition: all .3s ease
+        }
+
+        .c-dot.active {
+            background: var(--secondary);
+            width: 24px;
+            border-radius: 4px
+        }
+
+        /* Descripción */
+        .desc-section {
+            background: var(--white);
+            padding: 96px 0
+        }
+
+        .sec-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 212, 255, .1);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            border: 1px solid rgba(0, 212, 255, .2)
+        }
+
+        .sec-label .material-symbols-outlined {
+            font-size: 16px;
+            color: var(--secondary)
+        }
+
+        .desc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center
+        }
+
+        .desc-text h2 {
+            font-size: 40px;
+            line-height: 1.15;
+            margin-bottom: 24px
+        }
+
+        .desc-text p {
+            color: var(--text-muted);
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 16px
+        }
+
+        .hi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 32px
+        }
+
+        .hi-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-main)
+        }
+
+        .hi-item .material-symbols-outlined {
+            color: var(--secondary);
+            font-size: 20px;
+            flex-shrink: 0
+        }
+
+        .desc-img {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            background: linear-gradient(135deg, #e0f5fa, #c0ebf5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #80bece;
+            border: 2px dashed #a0d8e8
+        }
+
+        .desc-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .desc-img .material-symbols-outlined {
+            font-size: 56px
+        }
+
+        .desc-img p {
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600
+        }
+
+        /* Tips */
+        .tips-section {
+            background: var(--bg-light);
+            padding: 96px 0
+        }
+
+        .tips-hdr {
+            text-align: center;
+            margin-bottom: 64px
+        }
+
+        .tips-hdr h2 {
+            font-size: 40px;
+            margin-bottom: 12px
+        }
+
+        .tips-hdr p {
+            color: var(--text-muted);
+            font-size: 17px;
+            max-width: 560px;
+            margin: 0 auto
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px
+        }
+
+        .tip-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            box-shadow: var(--shadow);
+            transition: transform .3s ease, box-shadow .3s ease;
+            position: relative;
+            overflow: hidden
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px
+        }
+
+        .tip-best::before {
+            background: var(--accent)
+        }
+
+        .tip-rain::before {
+            background: #60a5fa
+        }
+
+        .tip-warn::before {
+            background: #f59e0b
+        }
+
+        .tip-temp::before {
+            background: #fb7185
+        }
+
+        .tip-money::before {
+            background: var(--secondary)
+        }
+
+        .tip-culture::before {
+            background: #a78bfa
+        }
+
+        .tip-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg)
+        }
+
+        .tip-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px
+        }
+
+        .tip-icon .material-symbols-outlined {
+            font-size: 26px
+        }
+
+        .tip-best .tip-icon {
+            background: rgba(17, 234, 189, .12);
+            color: #059669
+        }
+
+        .tip-rain .tip-icon {
+            background: rgba(96, 165, 250, .12);
+            color: #2563eb
+        }
+
+        .tip-warn .tip-icon {
+            background: rgba(245, 158, 11, .12);
+            color: #d97706
+        }
+
+        .tip-temp .tip-icon {
+            background: rgba(251, 113, 133, .12);
+            color: #e11d48
+        }
+
+        .tip-money .tip-icon {
+            background: rgba(0, 212, 255, .12);
+            color: #0891b2
+        }
+
+        .tip-culture .tip-icon {
+            background: rgba(167, 139, 250, .12);
+            color: #7c3aed
+        }
+
+        .tip-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px
+        }
+
+        .tip-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.7
+        }
+
+        .tip-months {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 14px
+        }
+
+        .t-tag {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 100px
+        }
+
+        .t-green {
+            background: rgba(17, 234, 189, .15);
+            color: #059669
+        }
+
+        .t-blue {
+            background: rgba(96, 165, 250, .15);
+            color: #2563eb
+        }
+
+        .t-amber {
+            background: rgba(245, 158, 11, .15);
+            color: #d97706
+        }
+
+        .t-red {
+            background: rgba(251, 113, 133, .15);
+            color: #e11d48
+        }
+
+        /* Paquetes */
+        .pkgs-section {
+            background: var(--white);
+            padding: 96px 0
+        }
+
+        .pkgs-hdr {
+            text-align: center;
+            margin-bottom: 64px
+        }
+
+        .pkgs-hdr h2 {
+            font-size: 40px;
+            margin-bottom: 12px
+        }
+
+        .pkgs-hdr p {
+            color: var(--text-muted);
+            font-size: 17px;
+            max-width: 560px;
+            margin: 0 auto
+        }
+
+        .pkgs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px
+        }
+
+        .pkg-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform .3s ease, box-shadow .3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            cursor: pointer
+        }
+
+        .pkg-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg)
+        }
+
+        .pkg-card-link {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            border-radius: inherit
+        }
+
+        .pkg-img {
+            height: 220px;
+            background: linear-gradient(135deg, #c0ebf5, #a8dff0);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            color: #70b0c8
+        }
+
+        .pkg-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .pkg-img .material-symbols-outlined {
+            font-size: 48px
+        }
+
+        .pkg-img p {
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600
+        }
+
+        .pkg-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: var(--secondary);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 100px
+        }
+
+        .pkg-body {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .pkg-tag {
+            color: var(--secondary);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 8px
+        }
+
+        .pkg-body h3 {
+            font-size: 20px;
+            margin-bottom: 8px
+        }
+
+        .pkg-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 16px
+        }
+
+        .pkg-feats {
+            list-style: none;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .pkg-feats li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted)
+        }
+
+        .pkg-feats li .material-symbols-outlined {
+            font-size: 16px;
+            color: var(--accent)
+        }
+
+        .pkg-foot {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--border)
+        }
+
+        .pkg-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary)
+        }
+
+        .pkg-price small {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            display: block;
+            line-height: 1
+        }
+
+        .btn-pkg {
+            background: var(--primary);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 14px;
+            transition: all .2s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            z-index: 2
+        }
+
+        .btn-pkg:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px)
+        }
+
+        /* CTA */
+        .cta-banner {
+            background: var(--primary);
+            padding: 80px 0;
+            text-align: center
+        }
+
+        .cta-banner h2 {
+            color: #fff;
+            font-size: 36px;
+            margin-bottom: 16px
+        }
+
+        .cta-banner p {
+            color: rgba(255, 255, 255, .7);
+            font-size: 17px;
+            max-width: 500px;
+            margin: 0 auto 36px
+        }
+
+        /* Responsive */
+        @media(max-width:992px) {
+
+            .desc-grid,
+            .tips-grid,
+            .pkgs-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .dest-hero-content h1 {
+                font-size: 40px
+            }
+        }
+
+        @media(max-width:600px) {
+
+            .tips-grid,
+            .pkgs-grid,
+            .hi-grid {
+                grid-template-columns: 1fr
+            }
+
+            .dest-hero {
+                height: 420px
+            }
+
+            .dest-hero-content h1 {
+                font-size: 30px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../index.html" class="logo"><span
+                    class="material-symbols-outlined">explore</span>SmartTrip<span>Colombia</span></a>
+            <ul class="nav-links">
+                <li><a href="../../destinations.html">Destinos</a></li>
+                <li><a href="../../packages.html">Planes de Viaje</a></li>
+                <li><a href="../../how-it-works.html">Cómo funciona</a></li>
+                <li><a href="../../about.html">Nosotros</a></li>
+                <li><a href="../../support.html">Soporte</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../../login.html" class="btn-ghost" style="margin-right:8px">Iniciar Sesión</a>
+                <a href="../../quote.html" class="btn-primary">Solicitar Cotización</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="dest-hero">
+        <img src="../../assets/san_andres/san_andres_ppal.png" alt="San Andrés" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.6">
+        <div class="dest-hero-overlay"></div>
+        <div class="dest-hero-content container">
+            <div class="dest-badge"><span class="material-symbols-outlined"
+                    style="font-size:15px">location_on</span>Colombia · Archipiélago del Caribe</div>
+            <h1>San Andrés<br>Islas</h1>
+            <p>El mar de los siete colores. Arrecifes, arenas blancas y una cultura raizal única en el Caribe
+                colombiano.</p>
+            <div class="dest-meta">
+                <span><span class="material-symbols-outlined">sunny</span>Clima tropical todo el año</span>
+                <span><span class="material-symbols-outlined">flight</span>~2h desde Bogotá</span>
+                <span><span class="material-symbols-outlined">water</span>Mar de los 7 colores</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Carrusel -->
+    <section class="carousel-section">
+        <div class="carousel-wrapper">
+            <div class="carousel-track-container">
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="carousel-slide">
+                        <img src="../../assets/san_andres/carrousell/Mar_de_los_Siete_Colores.png" alt="Mar de los Siete Colores">
+                        <div class="slide-caption">Mar de los Siete Colores — El espectáculo natural más icónico de la isla</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../../assets/san_andres/carrousell/johnny_cay.png" alt="Johnny Cay">
+                        <div class="slide-caption">Johnny Cay — Islote de arena blanca y palmeras en medio del mar</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../../assets/san_andres/carrousell/acuario.png" alt="El Acuario">
+                        <div class="slide-caption">El Acuario — Nada con peces tropicales en aguas turquesas cristalinas</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../../assets/san_andres/carrousell/Hoyo_Soplador.png" alt="El Hoyo Soplador">
+                        <div class="slide-caption">El Hoyo Soplador — Fenómeno natural único en el sur de la isla</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../../assets/san_andres/carrousell/playa.png" alt="Playas de San Andrés">
+                        <div class="slide-caption">Playas de San Andrés — Arenas blancas y aguas turquesas del Caribe colombiano</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../../assets/san_andres/carrousell/Buceo.png" alt="Buceo en San Andrés">
+                        <div class="slide-caption">Buceo en San Andrés — Arrecifes coralinos entre los más biodiversos del Caribe</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../../assets/san_andres/carrousell/parasail.png" alt="Parasailing">
+                        <div class="slide-caption">Parasailing — Adrenalina y vistas privilegiadas sobre el mar</div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../../assets/san_andres/carrousell/Velero-en-San-Andres.png" alt="Velero en San Andrés">
+                        <div class="slide-caption">Velero en San Andrés — Navega hacia los cayos bajo el sol del Caribe</div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-controls">
+                <button class="c-btn" id="prevBtn"><span class="material-symbols-outlined">chevron_left</span></button>
+                <div class="c-dots" id="carouselDots">
+                    <div class="c-dot active" data-index="0"></div>
+                    <div class="c-dot" data-index="1"></div>
+                    <div class="c-dot" data-index="2"></div>
+                    <div class="c-dot" data-index="3"></div>
+                    <div class="c-dot" data-index="4"></div>
+                    <div class="c-dot" data-index="5"></div>
+                    <div class="c-dot" data-index="6"></div>
+                    <div class="c-dot" data-index="7"></div>
+                </div>
+                <button class="c-btn" id="nextBtn"><span class="material-symbols-outlined">chevron_right</span></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Descripción -->
+    <section class="desc-section">
+        <div class="container">
+            <div class="desc-grid">
+                <div class="desc-text">
+                    <div class="sec-label"><span class="material-symbols-outlined">menu_book</span>Sobre el destino
+                    </div>
+                    <h2>Un paraíso caribeño con identidad propia</h2>
+                    <p>San Andrés Islas es mucho más que sus famosas aguas turquesas. Es un territorio con una identidad
+                        cultural única: la comunidad raizal, de herencia africana e inglesa, convive con viajeros de
+                        todo el mundo en un archipiélago declarado Reserva de Biósfera por la UNESCO.</p>
+                    <p>Sus arrecifes de coral, entre los mejores del mundo para el buceo, albergan una biodiversidad
+                        marina extraordinaria. Desde el snorkel en El Acuario hasta los paseos en lancha por Johnny Cay,
+                        cada momento en San Andrés es un recuerdo imborrable.</p>
+                    <div class="hi-grid">
+                        <div class="hi-item"><span class="material-symbols-outlined">scuba_diving</span>Buceo y snorkel
+                            de clase mundial</div>
+                        <div class="hi-item"><span class="material-symbols-outlined">anchor</span>Excursiones en lancha
+                            a cayos</div>
+                        <div class="hi-item"><span class="material-symbols-outlined">music_note</span>Cultura raizal y
+                            música reggae</div>
+                        <div class="hi-item"><span class="material-symbols-outlined">shopping_bag</span>Puerto libre de
+                            impuestos</div>
+                        <div class="hi-item"><span class="material-symbols-outlined">set_meal</span>Gastronomía
+                            afrocaribeña</div>
+                        <div class="hi-item"><span class="material-symbols-outlined">waves</span>Mar de los 7 colores
+                        </div>
+                    </div>
+                </div>
+                <div class="desc-img">
+                   <div class="desc-img">
+                    <img src="../../assets/san_andres/descriptiva.png" alt="San Andrés colorida">
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tips -->
+    <section class="tips-section">
+        <div class="container">
+            <div class="tips-hdr">
+                <div class="sec-label" style="margin:0 auto 20px"><span
+                        class="material-symbols-outlined">lightbulb</span>Consejos de viaje</div>
+                <h2>Lo que debes saber antes de viajar</h2>
+                <p>Temporadas, clima, huracanes y todo lo esencial para disfrutar San Andrés al máximo.</p>
+            </div>
+            <div class="tips-grid">
+                <div class="tip-card tip-best">
+                    <div class="tip-icon"><span class="material-symbols-outlined">wb_sunny</span></div>
+                    <h3>Mejor temporada para viajar</h3>
+                    <p>La mejor época es de diciembre a abril (temporada seca). El mar está en calma, el cielo despejado
+                        y las condiciones ideales para buceo, snorkel y excursiones a los cayos.</p>
+                    <div class="tip-months">
+                        <span class="t-tag t-green">Dic</span><span class="t-tag t-green">Ene</span><span
+                            class="t-tag t-green">Feb</span><span class="t-tag t-green">Mar</span><span
+                            class="t-tag t-green">Abr</span>
+                    </div>
+                </div>
+                <div class="tip-card tip-rain">
+                    <div class="tip-icon"><span class="material-symbols-outlined">rainy</span></div>
+                    <h3>Temporada de lluvias</h3>
+                    <p>Las lluvias se presentan entre mayo y noviembre, más intensas de agosto a octubre. Aunque llueve,
+                        el calor permanece y muchas actividades siguen siendo posibles.</p>
+                    <div class="tip-months">
+                        <span class="t-tag t-blue">May</span><span class="t-tag t-blue">Jun</span><span
+                            class="t-tag t-blue">Jul</span><span class="t-tag t-blue">Ago</span><span
+                            class="t-tag t-blue">Sep</span><span class="t-tag t-blue">Oct</span><span
+                            class="t-tag t-blue">Nov</span>
+                    </div>
+                </div>
+                <div class="tip-card tip-warn">
+                    <div class="tip-icon"><span class="material-symbols-outlined">storm</span></div>
+                    <h3>Temporada de huracanes</h3>
+                    <p>San Andrés está en la zona de influencia de huracanes del Caribe. La temporada oficial es de
+                        junio a noviembre, con mayor riesgo entre agosto y octubre. Verifica siempre las alertas
+                        climáticas antes de viajar en esos meses.</p>
+                    <div class="tip-months">
+                        <span class="t-tag t-amber">Jun</span><span class="t-tag t-amber">Jul</span><span
+                            class="t-tag t-red">Ago</span><span class="t-tag t-red">Sep</span><span
+                            class="t-tag t-red">Oct</span><span class="t-tag t-amber">Nov</span>
+                    </div>
+                </div>
+                <div class="tip-card tip-temp">
+                    <div class="tip-icon"><span class="material-symbols-outlined">thermometer</span></div>
+                    <h3>Temperatura</h3>
+                    <p>Clima cálido y húmedo todo el año, con temperaturas entre 27 y 32 °C. La brisa marina refresca el
+                        ambiente en la costa. Usa ropa liviana y protector solar de alto factor.</p>
+                </div>
+                <div class="tip-card tip-money">
+                    <div class="tip-icon"><span class="material-symbols-outlined">payments</span></div>
+                    <h3>Puerto libre y compras</h3>
+                    <p>San Andrés es zona franca. Puedes comprar licores, perfumes y electrónicos sin impuestos. El cupo
+                        permitido por la DIAN desde el continente es de 500 USD en mercancía.</p>
+                </div>
+                <div class="tip-card tip-culture">
+                    <div class="tip-icon"><span class="material-symbols-outlined">diversity_3</span></div>
+                    <h3>Cultura raizal y consejos</h3>
+                    <p>La comunidad raizal tiene sus propias tradiciones, idioma (el creole) y gastronomía. Para
+                        ingresar necesitas el PIP (Permiso de Ingreso y Permanencia). ¡Tramítalo antes de viajar!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Paquetes -->
+    <section class="pkgs-section">
+        <div class="container">
+            <div class="pkgs-hdr">
+                <div class="sec-label" style="margin:0 auto 20px"><span
+                        class="material-symbols-outlined">luggage</span>Nuestros paquetes</div>
+                <h2>Planes disponibles para San Andrés</h2>
+                <p>Desde escapadas express hasta experiencias completas de buceo y cayos. Todos con asesoría
+                    personalizada.</p>
+            </div>
+            <div class="pkgs-grid">
+                <div class="pkg-card">
+                    <a class="pkg-card-link" href="../../quote.html" aria-label="Cotizar San Andrés Esencial"></a>
+                    <div class="pkg-img">
+                        <!-- <img src="../../assets/pkg_sa_clasico.jpg" alt="San Andrés Esencial"> -->
+                        <span class="material-symbols-outlined">image</span>
+                        <p>Imagen del paquete</p>
+                        <span class="pkg-badge">Más vendido</span>
+                    </div>
+                    <div class="pkg-body">
+                        <p class="pkg-tag">San Andrés · Colombia</p>
+                        <h3>San Andrés Esencial</h3>
+                        <p class="pkg-desc">Conoce los íconos de la isla: el mar de los 7 colores, Johnny Cay y El
+                            Acuario en un plan todo incluido.</p>
+                        <ul class="pkg-feats">
+                            <li><span class="material-symbols-outlined">check</span>4 días / 3 noches</li>
+                            <li><span class="material-symbols-outlined">check</span>Hotel incluido</li>
+                            <li><span class="material-symbols-outlined">check</span>Tour en lancha a cayos</li>
+                            <li><span class="material-symbols-outlined">check</span>Traslados aeropuerto</li>
+                        </ul>
+                        <div class="pkg-foot">
+                            <div class="pkg-price"><small>Desde</small>$1.590.000 COP</div>
+                            <a href="../../quote.html" class="btn-pkg">Cotizar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="pkg-card">
+                    <a class="pkg-card-link" href="../../quote.html" aria-label="Cotizar Aventura Submarina"></a>
+                    <div class="pkg-img">
+                        <!-- <img src="../../assets/pkg_sa_buceo.jpg" alt="Aventura Submarina"> -->
+                        <span class="material-symbols-outlined">image</span>
+                        <p>Imagen del paquete</p>
+                    </div>
+                    <div class="pkg-body">
+                        <p class="pkg-tag">San Andrés · Colombia</p>
+                        <h3>Aventura Submarina</h3>
+                        <p class="pkg-desc">Para los amantes del mar. Buceo en los arrecifes coralinos más ricos del
+                            Caribe colombiano con instructores certificados.</p>
+                        <ul class="pkg-feats">
+                            <li><span class="material-symbols-outlined">check</span>5 días / 4 noches</li>
+                            <li><span class="material-symbols-outlined">check</span>Hotel frente al mar</li>
+                            <li><span class="material-symbols-outlined">check</span>2 inmersiones de buceo</li>
+                            <li><span class="material-symbols-outlined">check</span>Equipo incluido</li>
+                        </ul>
+                        <div class="pkg-foot">
+                            <div class="pkg-price"><small>Desde</small>$2.350.000 COP</div>
+                            <a href="../../quote.html" class="btn-pkg">Cotizar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="pkg-card">
+                    <a class="pkg-card-link" href="../../quote.html" aria-label="Cotizar San Andrés & Providencia"></a>
+                    <div class="pkg-img">
+                        <!-- <img src="../../assets/pkg_sa_providencia.jpg" alt="San Andrés & Providencia"> -->
+                        <span class="material-symbols-outlined">image</span>
+                        <p>Imagen del paquete</p>
+                        <span class="pkg-badge">Premium</span>
+                    </div>
+                    <div class="pkg-body">
+                        <p class="pkg-tag">San Andrés · Colombia</p>
+                        <h3>San Andrés & Providencia</h3>
+                        <p class="pkg-desc">La experiencia completa del archipiélago. Incluye traslado a Providencia,
+                            una de las islas más bellas del mundo.</p>
+                        <ul class="pkg-feats">
+                            <li><span class="material-symbols-outlined">check</span>7 días / 6 noches</li>
+                            <li><span class="material-symbols-outlined">check</span>Hoteles premium</li>
+                            <li><span class="material-symbols-outlined">check</span>Traslado a Providencia</li>
+                            <li><span class="material-symbols-outlined">check</span>Todas las excursiones</li>
+                        </ul>
+                        <div class="pkg-foot">
+                            <div class="pkg-price"><small>Desde</small>$3.800.000 COP</div>
+                            <a href="../../quote.html" class="btn-pkg">Cotizar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container" style="text-align: right; margin-bottom: 60px;">
+        <a href="../../quote.html" class="btn-pkg">Ver todos los planes</a>
+    </div>
+
+    <!-- CTA -->
+    <section class="cta-banner">
+        <div class="container">
+            <h2>¿Listo para vivir el mar de los 7 colores?</h2>
+            <p>Cuéntanos tus preferencias y nuestro equipo diseñará el plan perfecto para ti.</p>
+            <a href="../../quote.html" class="btn-secondary"
+                style="display:inline-block;font-size:16px;padding:16px 40px">Solicitar cotización gratuita</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a href="../../index.html" class="logo"
+                        style="color:var(--white);margin-bottom:24px;display:flex"><span
+                            class="material-symbols-outlined">explore</span>SmartTrip</a>
+                    <p>Líderes en tecnología aplicada al turismo. Haciendo que viajar sea tan fácil como dar un click.
+                    </p>
+                </div>
+                <div>
+                    <h4>Destinos</h4>
+                    <ul class="footer-links">
+                        <li><a href="../cartagena/cartagena.html">Cartagena</a></li>
+                        <li><a href="../santa_marta/santa_marta.html">Santa Marta</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Compañía</h4>
+                    <ul class="footer-links">
+                        <li><a href="../../about.html">Sobre Nosotros</a></li>
+                        <li><a href="../../how-it-works.html">Cómo funciona</a></li>
+                        <li><a href="../../support.html">Asistencia</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61587732822773" target="_blank"
+                            title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/smarttripc" target="_blank" title="Instagram"><i
+                                class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 SmartTrip Colombia. Todos los derechos reservados.</p>
+                <p>Desarrollado por MVP Solutions SAS.</p>
+                <p>RNT #123456</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../crm-service.js"></script>
+    <script>
+        const track = document.getElementById('carouselTrack'), dots = document.querySelectorAll('.c-dot'), slides = document.querySelectorAll('.carousel-slide');
+        let current = 0, timer;
+        function goTo(i) { current = (i + slides.length) % slides.length; track.style.transform = `translateX(-${current * 100}%)`; dots.forEach((d, j) => d.classList.toggle('active', j === current)) }
+        function startAuto() { timer = setInterval(() => goTo(current + 1), 5000) }
+        function resetAuto() { clearInterval(timer); startAuto() }
+        document.getElementById('prevBtn').addEventListener('click', () => { goTo(current - 1); resetAuto() });
+        document.getElementById('nextBtn').addEventListener('click', () => { goTo(current + 1); resetAuto() });
+        dots.forEach(d => d.addEventListener('click', () => { goTo(parseInt(d.dataset.index)); resetAuto() }));
+        let tx = 0;
+        track.parentElement.addEventListener('touchstart', e => { tx = e.touches[0].clientX });
+        track.parentElement.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 50) { goTo(dx > 0 ? current + 1 : current - 1); resetAuto() } });
+        startAuto();
+    </script>
+    <script src="../../main.js"></script>
+</body>
+
+</html>

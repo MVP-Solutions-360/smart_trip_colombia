@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartagena de Indias | SmartTrip Colombia</title>
+    <meta name="description"
+        content="Descubre Cartagena de Indias con SmartTrip Colombia. Playas del Caribe, ciudad amurallada, historia y cultura. Paquetes todo incluido desde Colombia.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <!-- CSS base del proyecto (dos niveles arriba) -->
+    <link rel="stylesheet" href="../../index.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ── Hero del destino ── */
+        .dest-hero {
+            position: relative;
+            height: 520px;
+            background: var(--primary);
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .dest-hero-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.55;
+        }
+
+        .dest-hero-img-placeholder {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #0a2540 0%, #163c63 50%, #00d4ff22 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .dest-hero-img-placeholder .material-symbols-outlined {
+            font-size: 64px;
+            opacity: 0.3;
+        }
+
+        .dest-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10, 37, 64, 0.85) 0%, rgba(10, 37, 64, 0.1) 60%, transparent 100%);
+        }
+
+        .dest-hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 40px 24px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dest-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--secondary);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dest-hero-content h1 {
+            color: #fff;
+            font-size: 56px;
+            line-height: 1.05;
+            margin-bottom: 12px;
+        }
+
+        .dest-hero-content p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 18px;
+            max-width: 500px;
+            margin-bottom: 28px;
+        }
+
+        .dest-hero-meta {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .dest-hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .dest-hero-meta .material-symbols-outlined {
+            font-size: 18px;
+            color: var(--secondary);
+        }
+
+        /* ── Carrusel ── */
+        .carousel-section {
+            background: var(--primary);
+            padding: 0 0 64px;
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .carousel-track-container {
+            overflow: hidden;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            aspect-ratio: 16/7;
+            background: #163c63;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Placeholder de imagen para el carrusel */
+        .slide-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background: linear-gradient(135deg, #0d2f50 0%, #1a4a7a 100%);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .slide-placeholder .material-symbols-outlined {
+            font-size: 72px;
+        }
+
+        .slide-placeholder p {
+            font-size: 14px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 28px;
+            background: linear-gradient(to top, rgba(10, 37, 64, 0.9) 0%, transparent 100%);
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .carousel-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .carousel-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(6px);
+        }
+
+        .carousel-btn:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            color: var(--primary);
+            transform: scale(1.08);
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: var(--secondary);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* ── Descripción ── */
+        .description-section {
+            background: var(--white);
+            padding: 96px 0;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .section-label .material-symbols-outlined {
+            font-size: 16px;
+            color: var(--secondary);
+        }
+
+        .description-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .description-text h2 {
+            font-size: 40px;
+            line-height: 1.15;
+            margin-bottom: 24px;
+        }
+
+        .description-text p {
+            color: var(--text-muted);
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .description-highlights {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .highlight-item .material-symbols-outlined {
+            color: var(--secondary);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .description-img-area {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            background: linear-gradient(135deg, #e8f4fd 0%, #d0eaf8 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #a0b8ce;
+            border: 2px dashed #c8dff0;
+            position: relative;
+        }
+
+        .description-img-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .description-img-area .material-symbols-outlined {
+            font-size: 56px;
+        }
+
+        .description-img-area p {
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Imagen descriptiva (cuando se usa la clase .desc-img) */
+        .desc-img {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            max-height: 560px;
+            width: 100%;
+            position: relative;
+        }
+
+        .desc-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        @media (max-width: 992px) {
+            .desc-img {
+                aspect-ratio: 16/9;
+                max-height: 400px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .desc-img {
+                aspect-ratio: 4/3;
+                max-height: 280px;
+            }
+        }
+
+        /* ── Tips section ── */
+        .tips-section {
+            background: var(--bg-light);
+            padding: 96px 0;
+        }
+
+        .tips-section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .tips-section-header h2 {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .tips-section-header p {
+            color: var(--text-muted);
+            font-size: 17px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .tip-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid transparent;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .tip-card.tip-best::before {
+            background: var(--accent);
+        }
+
+        .tip-card.tip-rain::before {
+            background: #60a5fa;
+        }
+
+        .tip-card.tip-warn::before {
+            background: #f59e0b;
+        }
+
+        .tip-card.tip-temp::before {
+            background: #fb7185;
+        }
+
+        .tip-card.tip-money::before {
+            background: var(--secondary);
+        }
+
+        .tip-card.tip-culture::before {
+            background: #a78bfa;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .tip-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tip-icon .material-symbols-outlined {
+            font-size: 26px;
+        }
+
+        .tip-card.tip-best .tip-icon {
+            background: rgba(17, 234, 189, 0.12);
+            color: #059669;
+        }
+
+        .tip-card.tip-rain .tip-icon {
+            background: rgba(96, 165, 250, 0.12);
+            color: #2563eb;
+        }
+
+        .tip-card.tip-warn .tip-icon {
+            background: rgba(245, 158, 11, 0.12);
+            color: #d97706;
+        }
+
+        .tip-card.tip-temp .tip-icon {
+            background: rgba(251, 113, 133, 0.12);
+            color: #e11d48;
+        }
+
+        .tip-card.tip-money .tip-icon {
+            background: rgba(0, 212, 255, 0.12);
+            color: #0891b2;
+        }
+
+        .tip-card.tip-culture .tip-icon {
+            background: rgba(167, 139, 250, 0.12);
+            color: #7c3aed;
+        }
+
+        .tip-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .tip-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .tip-months {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 14px;
+        }
+
+        .tip-month-tag {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 100px;
+        }
+
+        .tag-green {
+            background: rgba(17, 234, 189, 0.15);
+            color: #059669;
+        }
+
+        .tag-blue {
+            background: rgba(96, 165, 250, 0.15);
+            color: #2563eb;
+        }
+
+        .tag-amber {
+            background: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+        }
+
+        /* ── Paquetes ── */
+        .packages-section {
+            background: var(--white);
+            padding: 96px 0;
+        }
+
+        .packages-section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .packages-section-header h2 {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .packages-section-header p {
+            color: var(--text-muted);
+            font-size: 17px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .packages-grid-dest {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .pkg-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .pkg-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pkg-card-link {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            border-radius: inherit;
+        }
+
+        .pkg-img {
+            height: 220px;
+            background: linear-gradient(135deg, #d0eaf8 0%, #b8d8f0 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            color: #90b8d0;
+        }
+
+        .pkg-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pkg-img .material-symbols-outlined {
+            font-size: 48px;
+        }
+
+        .pkg-img p {
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .pkg-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: var(--secondary);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            letter-spacing: 0.3px;
+        }
+
+        .pkg-body {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pkg-dest-tag {
+            color: var(--secondary);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .pkg-body h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .pkg-body .pkg-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .pkg-features {
+            list-style: none;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .pkg-features li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .pkg-features li .material-symbols-outlined {
+            font-size: 16px;
+            color: var(--accent);
+        }
+
+        .pkg-footer {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .pkg-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .pkg-price small {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            display: block;
+            line-height: 1;
+        }
+
+        .btn-pkg {
+            background: var(--primary);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-pkg:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        /* ── CTA Banner ── */
+        .cta-banner {
+            background: var(--primary);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .cta-banner h2 {
+            color: #fff;
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .cta-banner p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 36px;
+            font-size: 17px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 992px) {
+            .description-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .tips-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .packages-grid-dest {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dest-hero-content h1 {
+                font-size: 40px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .packages-grid-dest {
+                grid-template-columns: 1fr;
+            }
+
+            .description-highlights {
+                grid-template-columns: 1fr;
+            }
+
+            .dest-hero {
+                height: 420px;
+            }
+
+            .dest-hero-content h1 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ══ Navbar ══ -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="../../index.html" class="logo">
+                <span class="material-symbols-outlined">explore</span>
+                SmartTrip<span>Colombia</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="../../destinations.html">Destinos</a></li>
+                <li><a href="../../packages.html">Planes de Viaje</a></li>
+                <li><a href="../../how-it-works.html">Cómo funciona</a></li>
+                <li><a href="../../about.html">Nosotros</a></li>
+                <li><a href="../../support.html">Soporte</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../../login.html" class="btn-ghost" style="margin-right: 8px;">Iniciar Sesión</a>
+                <a href="../../quote.html" class="btn-primary">Solicitar Cotización</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ══ Hero ══ -->
+    <header class="dest-hero">
+        <img src="../../assets/cartagena/Cartagena_de_Indias_homebanner.jpg" alt="Cartagena"
+            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.6">
+        <div class="dest-hero-overlay"></div>
+        <div class="dest-hero-content container">
+            <div class="dest-hero-badge">
+                <span class="material-symbols-outlined" style="font-size:15px;">location_on</span>
+                Colombia · Caribe
+            </div>
+            <h1>Cartagena<br>de Indias</h1>
+            <p>La joya del Caribe colombiano. Historia, gastronomía, playas de ensueño y una arquitectura que enamora.
+            </p>
+            <div class="dest-hero-meta">
+                <span>
+                    <span class="material-symbols-outlined">sunny</span>
+                    Clima cálido todo el año
+                </span>
+                <span>
+                    <span class="material-symbols-outlined">flight</span>
+                    ~1h desde Bogotá
+                </span>
+                <span>
+                    <span class="material-symbols-outlined">star</span>
+                    Destino más visitado de Colombia
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ══ Sección 1: Carrusel de imágenes ══ -->
+    <section class="carousel-section">
+        <div class="carousel-wrapper">
+            <div class="carousel-track-container">
+                <div class="carousel-track" id="carouselTrack">
+
+                    <!-- DIAPOSITIVA 1 -->
+                    <div class="carousel-slide">
+                        <img src="../../assets/cartagena/carrousell/Ciudad_Amurallada,_Cartagena_de_Indias.jpg"
+                            alt="Ciudad Amurallada">
+                        <div class="carousel-caption">La Ciudad Amurallada — Patrimonio de la Humanidad UNESCO</div>
+                    </div>
+
+                    <!-- DIAPOSITIVA 2 -->
+                    <div class="carousel-slide">
+                        <img src="../../assets/cartagena/carrousell/Ciudad_amurallada_1.jpg"
+                            alt="Ciudad Amurallada - Vista 2">
+                        <div class="carousel-caption">Calles de la Ciudad Amurallada — Historia, color y arquitectura
+                            colonial</div>
+                    </div>
+
+                    <!-- DIAPOSITIVA 3 -->
+                    <div class="carousel-slide">
+                        <img src="../../assets/cartagena/carrousell/Playa_Blanca,_Barú.jpg" alt="Playa Blanca Barú">
+                        <div class="carousel-caption">Playa Blanca, Barú — Una de las playas más hermosas del Caribe
+                            colombiano</div>
+                    </div>
+
+                    <!-- DIAPOSITIVA 4 -->
+                    <div class="carousel-slide">
+                        <img src="../../assets/cartagena/carrousell/012_Playa_Blanca_from_the_Boat.jpg"
+                            alt="Playa Blanca desde el mar">
+                        <div class="carousel-caption">Playa Blanca desde el mar — Aguas turquesas y arena blanca
+                            pristina</div>
+                    </div>
+
+                    <!-- DIAPOSITIVA 5 -->
+                    <div class="carousel-slide">
+                        <img src="../../assets/cartagena/carrousell/castillo_de_san_felipe.png" alt="Islas del Rosario">
+                        <div class="carousel-caption">Castillo San Felipe de Barajas — Historia, color y arquitectura
+                            colonial</div>
+                    </div>
+
+                    <!-- DIAPOSITIVA 6 -->
+                    <div class="carousel-slide">
+                        <img src="../../assets/cartagena/carrousell/TICO_127293.jpg" alt="Cartagena de Indias">
+                        <div class="carousel-caption">Cartagena de Indias — La joya del Caribe colombiano</div>
+                    </div>
+
+                    <!-- DIAPOSITIVA 7 -->
+                    <div class="carousel-slide">
+                        <img src="../../assets/cartagena/carrousell/Cartagena_de_Indias_homebanner.jpg"
+                            alt="Cartagena panorama">
+                        <div class="carousel-caption">Cartagena — Un destino único donde la historia se funde con el
+                            Caribe</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Controles del carrusel -->
+            <div class="carousel-controls">
+                <button class="carousel-btn" id="prevBtn" aria-label="Anterior">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <div class="carousel-dots" id="carouselDots">
+                    <div class="carousel-dot active" data-index="0"></div>
+                    <div class="carousel-dot" data-index="1"></div>
+                    <div class="carousel-dot" data-index="2"></div>
+                    <div class="carousel-dot" data-index="3"></div>
+                    <div class="carousel-dot" data-index="4"></div>
+                    <div class="carousel-dot" data-index="5"></div>
+                    <div class="carousel-dot" data-index="6"></div>
+                </div>
+                <button class="carousel-btn" id="nextBtn" aria-label="Siguiente">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ Sección 2: Descripción del destino ══ -->
+    <section class="description-section">
+        <div class="container">
+            <div class="description-grid">
+                <div class="description-text">
+                    <div class="section-label">
+                        <span class="material-symbols-outlined">menu_book</span>
+                        Sobre el destino
+                    </div>
+                    <h2>Una ciudad que te atrapa desde el primer instante</h2>
+                    <p>
+                        Cartagena de Indias es mucho más que un destino de playa. Sus calles empedradas, balcones
+                        floridos y murallas coloniales cuentan siglos de historia. Declarada Patrimonio de la
+                        Humanidad por la UNESCO, es hoy uno de los destinos turísticos más codiciados de América Latina.
+                    </p>
+                    <p>
+                        Desde las aguas cristalinas de las Islas del Rosario hasta la vibrante oferta gastronómica del
+                        Corralito de Piedra, cada rincón de Cartagena tiene algo que ofrecerte. Es el punto de partida
+                        ideal para conectar con el auténtico espíritu caribeño de Colombia.
+                    </p>
+
+                    <div class="description-highlights">
+                        <div class="highlight-item">
+                            <span class="material-symbols-outlined">castle</span>
+                            Ciudad amurallada histórica
+                        </div>
+                        <div class="highlight-item">
+                            <span class="material-symbols-outlined">beach_access</span>
+                            Islas y playas de Caribe
+                        </div>
+                        <div class="highlight-item">
+                            <span class="material-symbols-outlined">restaurant</span>
+                            Gastronomía de clase mundial
+                        </div>
+                        <div class="highlight-item">
+                            <span class="material-symbols-outlined">nightlife</span>
+                            Vida nocturna y cultura
+                        </div>
+                        <div class="highlight-item">
+                            <span class="material-symbols-outlined">directions_boat</span>
+                            Excursiones marítimas
+                        </div>
+                        <div class="highlight-item">
+                            <span class="material-symbols-outlined">photo_camera</span>
+                            Arquitectura colonial única
+                        </div>
+                    </div>
+                </div>
+                <div class="desc-img">
+                    <img src="../../assets/cartagena/descriptiva.png" alt="Cartagena colorida">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ Sección 3: Tips de viaje ══ -->
+    <section class="tips-section">
+        <div class="container">
+            <div class="tips-section-header">
+                <div class="section-label" style="margin: 0 auto 20px;">
+                    <span class="material-symbols-outlined">lightbulb</span>
+                    Consejos de viaje
+                </div>
+                <h2>Lo que debes saber antes de viajar</h2>
+                <p>Temperatura, lluvias, temporadas y más. Toda la información para planear tu viaje perfecto a
+                    Cartagena.</p>
+            </div>
+
+            <div class="tips-grid">
+
+                <!-- Mejor época -->
+                <div class="tip-card tip-best">
+                    <div class="tip-icon">
+                        <span class="material-symbols-outlined">wb_sunny</span>
+                    </div>
+                    <h3>Mejor temporada para viajar</h3>
+                    <p>Los meses ideales son de diciembre a abril. El clima es seco, el mar está en calma y las
+                        condiciones son perfectas para disfrutar las playas y las islas del Rosario.</p>
+                    <div class="tip-months">
+                        <span class="tip-month-tag tag-green">Dic</span>
+                        <span class="tip-month-tag tag-green">Ene</span>
+                        <span class="tip-month-tag tag-green">Feb</span>
+                        <span class="tip-month-tag tag-green">Mar</span>
+                        <span class="tip-month-tag tag-green">Abr</span>
+                    </div>
+                </div>
+
+                <!-- Temporada de lluvias -->
+                <div class="tip-card tip-rain">
+                    <div class="tip-icon">
+                        <span class="material-symbols-outlined">rainy</span>
+                    </div>
+                    <h3>Temporada de lluvias</h3>
+                    <p>Cartagena tiene dos períodos lluviosos: el primero de mayo a junio y el más intenso de agosto a
+                        noviembre. Las lluvias suelen ser breves pero fuertes, especialmente en la tarde.</p>
+                    <div class="tip-months">
+                        <span class="tip-month-tag tag-blue">May</span>
+                        <span class="tip-month-tag tag-blue">Jun</span>
+                        <span class="tip-month-tag tag-blue">Ago</span>
+                        <span class="tip-month-tag tag-blue">Sep</span>
+                        <span class="tip-month-tag tag-blue">Oct</span>
+                        <span class="tip-month-tag tag-blue">Nov</span>
+                    </div>
+                </div>
+
+                <!-- Temporada de vientos -->
+                <div class="tip-card tip-warn">
+                    <div class="tip-icon">
+                        <span class="material-symbols-outlined">air</span>
+                    </div>
+                    <h3>Vientos alisios (los "Chubascos")</h3>
+                    <p>Entre diciembre y marzo soplan los vientos alisios del norte. Pueden agitar el mar y dificultar
+                        las excursiones a las Islas del Rosario. Consulta siempre las condiciones marítimas antes de
+                        salir.</p>
+                    <div class="tip-months">
+                        <span class="tip-month-tag tag-amber">Dic</span>
+                        <span class="tip-month-tag tag-amber">Ene</span>
+                        <span class="tip-month-tag tag-amber">Feb</span>
+                        <span class="tip-month-tag tag-amber">Mar</span>
+                    </div>
+                </div>
+
+                <!-- Temperatura -->
+                <div class="tip-card tip-temp">
+                    <div class="tip-icon">
+                        <span class="material-symbols-outlined">thermometer</span>
+                    </div>
+                    <h3>Temperatura</h3>
+                    <p>Cartagena tiene un clima cálido y húmedo durante todo el año. La temperatura promedio es de 28–32
+                        °C, con una sensación térmica superior por la humedad. Empaca ropa ligera y protector solar.</p>
+                </div>
+
+                <!-- Dinero y costo de vida -->
+                <div class="tip-card tip-money">
+                    <div class="tip-icon">
+                        <span class="material-symbols-outlined">payments</span>
+                    </div>
+                    <h3>Costo de vida y propinas</h3>
+                    <p>Cartagena es uno de los destinos más caros de Colombia. En el centro histórico y Bocagrande los
+                        precios son similares a los de cualquier ciudad turística latinoamericana. Se acostumbra dejar
+                        el 10% de propina en restaurantes.</p>
+                </div>
+
+                <!-- Cultura y seguridad -->
+                <div class="tip-card tip-culture">
+                    <div class="tip-icon">
+                        <span class="material-symbols-outlined">diversity_3</span>
+                    </div>
+                    <h3>Cultura y consejos prácticos</h3>
+                    <p>El Centro Histórico y Bocagrande son los sectores más seguros para turistas. Evita las zonas
+                        periféricas de noche. Usa bloqueador solar con frecuencia y mantente hidratado. El transporte
+                        recomendado son los taxis oficiales o apps como InDriver.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ Sección 4: Paquetes del destino ══ -->
+    <section class="packages-section">
+        <div class="container">
+            <div class="packages-section-header">
+                <div class="section-label" style="margin: 0 auto 20px;">
+                    <span class="material-symbols-outlined">luggage</span>
+                    Nuestros paquetes
+                </div>
+                <h2>Planes disponibles para Cartagena</h2>
+                <p>Escoge el paquete que más se ajuste a tu estilo de viaje. Todos incluyen asesoría personalizada y
+                    acceso a tu panel digital.</p>
+            </div>
+
+            <div class="packages-grid-dest">
+
+                <!-- Paquete 1 -->
+                <div class="pkg-card">
+                    <a class="pkg-card-link" href="../../quote.html" aria-label="Cotizar Cartagena Mágica"></a>
+                    <div class="pkg-img">
+                        <!--
+                            Reemplaza por: <img src="../../assets/pkg_cartagena_clasico.jpg" alt="Cartagena Clásica">
+                        -->
+                        <span class="material-symbols-outlined">image</span>
+                        <p>Imagen del paquete</p>
+                        <span class="pkg-badge">Más vendido</span>
+                    </div>
+                    <div class="pkg-body">
+                        <p class="pkg-dest-tag">Cartagena · Colombia</p>
+                        <h3>Cartagena Mágica</h3>
+                        <p class="pkg-desc">El clásico para conocer la ciudad amurallada, la historia y las mejores
+                            playas de Bocagrande.</p>
+                        <ul class="pkg-features">
+                            <li><span class="material-symbols-outlined">check</span> 4 días / 3 noches</li>
+                            <li><span class="material-symbols-outlined">check</span> Hotel incluido</li>
+                            <li><span class="material-symbols-outlined">check</span> Tour Ciudad Amurallada</li>
+                            <li><span class="material-symbols-outlined">check</span> Traslados aeropuerto</li>
+                        </ul>
+                        <div class="pkg-footer">
+                            <div class="pkg-price">
+                                <small>Desde</small>
+                                $1.250.000 COP
+                            </div>
+                            <a href="../../quote.html" class="btn-pkg">Cotizar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paquete 2 -->
+                <div class="pkg-card">
+                    <a class="pkg-card-link" href="../../quote.html" aria-label="Cotizar Islas del Rosario & Mar"></a>
+                    <div class="pkg-img">
+                        <!--
+                            Reemplaza por: <img src="../../assets/pkg_cartagena_islas.jpg" alt="Islas del Rosario">
+                        -->
+                        <span class="material-symbols-outlined">image</span>
+                        <p>Imagen del paquete</p>
+                    </div>
+                    <div class="pkg-body">
+                        <p class="pkg-dest-tag">Cartagena · Colombia</p>
+                        <h3>Islas del Rosario & Mar</h3>
+                        <p class="pkg-desc">Vive la experiencia del Caribe colombiano con excursión a las Islas del
+                            Rosario incluida.</p>
+                        <ul class="pkg-features">
+                            <li><span class="material-symbols-outlined">check</span> 5 días / 4 noches</li>
+                            <li><span class="material-symbols-outlined">check</span> Hotel frente al mar</li>
+                            <li><span class="material-symbols-outlined">check</span> Excursión Islas del Rosario</li>
+                            <li><span class="material-symbols-outlined">check</span> Snorkel incluido</li>
+                        </ul>
+                        <div class="pkg-footer">
+                            <div class="pkg-price">
+                                <small>Desde</small>
+                                $1.980.000 COP
+                            </div>
+                            <a href="../../quote.html" class="btn-pkg">Cotizar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paquete 3 -->
+                <div class="pkg-card">
+                    <a class="pkg-card-link" href="../../quote.html" aria-label="Cotizar Cartagena Luxury"></a>
+                    <div class="pkg-img">
+                        <!--
+                            Reemplaza por: <img src="../../assets/pkg_cartagena_luxury.jpg" alt="Cartagena Luxury">
+                        -->
+                        <span class="material-symbols-outlined">image</span>
+                        <p>Imagen del paquete</p>
+                        <span class="pkg-badge">Premium</span>
+                    </div>
+                    <div class="pkg-body">
+                        <p class="pkg-dest-tag">Cartagena · Colombia</p>
+                        <h3>Cartagena Luxury</h3>
+                        <p class="pkg-desc">La experiencia más exclusiva con hotel 5 estrellas, cenas gourmet y
+                            recorrido privado en lancha a las islas.</p>
+                        <ul class="pkg-features">
+                            <li><span class="material-symbols-outlined">check</span> 6 días / 5 noches</li>
+                            <li><span class="material-symbols-outlined">check</span> Hotel 5 estrellas</li>
+                            <li><span class="material-symbols-outlined">check</span> Lancha privada a las islas</li>
+                            <li><span class="material-symbols-outlined">check</span> Cenas gourmet incluidas</li>
+                        </ul>
+                        <div class="pkg-footer">
+                            <div class="pkg-price">
+                                <small>Desde</small>
+                                $3.200.000 COP
+                            </div>
+                            <a href="../../quote.html" class="btn-pkg">Cotizar</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ CTA Final ══ -->
+    <section class="cta-banner">
+        <div class="container">
+            <h2>¿Listo para descubrir Cartagena?</h2>
+            <p>Cuéntanos tus preferencias y nuestro equipo diseñará la propuesta perfecta para ti.</p>
+            <a href="../../quote.html" class="btn-secondary"
+                style="display: inline-block; font-size: 16px; padding: 16px 40px;">
+                Solicitar cotización gratuita
+            </a>
+        </div>
+    </section>
+
+    <!-- ══ Footer ══ -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a href="../../index.html" class="logo"
+                        style="color: var(--white); margin-bottom: 24px; display: flex;">
+                        <span class="material-symbols-outlined">explore</span>
+                        SmartTrip
+                    </a>
+                    <p>Líderes en tecnología aplicada al turismo. Haciendo que viajar sea tan fácil como dar un click.
+                    </p>
+                </div>
+                <div>
+                    <h4>Destinos</h4>
+                    <ul class="footer-links">
+                        <li><a href="../santa_marta/santa_marta.html">Santa Marta</a></li>
+                        <li><a href="../san_andres/san_andres.html">San Andrés</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Compañía</h4>
+                    <ul class="footer-links">
+                        <li><a href="../../about.html">Sobre Nosotros</a></li>
+                        <li><a href="../../how-it-works.html">Cómo funciona</a></li>
+                        <li><a href="../../support.html">Asistencia</a></li>
+                        <li><a href="../../blog.html">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61587732822773" target="_blank"
+                            title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com/smarttripc" target="_blank" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 SmartTrip Colombia. Todos los derechos reservados.</p>
+                <p>Desarrollado por MVP Solutions SAS.</p>
+                <p>RNT #123456</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../crm-service.js"></script>
+    <script>
+        // ── Carrusel ──────────────────────────────────────────────
+        const track = document.getElementById('carouselTrack');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const slides = document.querySelectorAll('.carousel-slide');
+        let current = 0;
+        let autoplayTimer;
+
+        function goTo(index) {
+            current = (index + slides.length) % slides.length;
+            track.style.transform = `translateX(-${current * 100}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === current));
+        }
+
+        function startAutoplay() {
+            autoplayTimer = setInterval(() => goTo(current + 1), 5000);
+        }
+
+        function resetAutoplay() {
+            clearInterval(autoplayTimer);
+            startAutoplay();
+        }
+
+        document.getElementById('prevBtn').addEventListener('click', () => { goTo(current - 1); resetAutoplay(); });
+        document.getElementById('nextBtn').addEventListener('click', () => { goTo(current + 1); resetAutoplay(); });
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => { goTo(parseInt(dot.dataset.index)); resetAutoplay(); });
+        });
+
+        // Soporte de swipe táctil
+        let touchStartX = 0;
+        track.parentElement.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+        track.parentElement.addEventListener('touchend', e => {
+            const delta = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(delta) > 50) { goTo(delta > 0 ? current + 1 : current - 1); resetAutoplay(); }
+        });
+
+        startAutoplay();
+    </script>
+    <script src="../../main.js"></script>
+</body>
+
+</html>

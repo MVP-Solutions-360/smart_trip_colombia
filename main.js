@@ -29,7 +29,7 @@ function updateNavigation() {
 
   if (token && loginLink) {
     loginLink.innerHTML = '<span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 4px;">account_circle</span> Mi Cuenta';
-    loginLink.href = '#'; // O a un perfil real
+    loginLink.href = 'dashboard.html'; // O a un perfil real
 
     // Agregar botón de cerrar sesión
     const navActions = loginLink.parentElement;

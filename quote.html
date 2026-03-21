@@ -96,7 +96,7 @@
         <div class="container">
             <h1 style="color: white; font-size: 48px; margin-bottom: 16px;">Planea tu Próximo Viaje</h1>
             <p style="color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto;">Dinos tus preferencias y nuestro
-                equipo de expertos diseñará la propuesta tecnológica ideal para ti.</p>
+                equipo de expertos diseñará la propuesta ideal para ti.</p>
         </div>
     </header>
 
@@ -119,24 +119,44 @@
                         <input type="tel" id="phone" class="form-control" placeholder="+57 300 000 0000" required>
                     </div>
                     <div class="form-group">
+                        <label for="destination_type">Tipo de Destino</label>
+                        <select id="destination_type" class="form-control">
+                            <option value="">Selecciona un tipo</option>
+                            <option value="nacional">Nacional</option>
+                            <option value="internacional">Internacional</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row" id="destination-row" style="display: none;">
+                    <div class="form-group" style="grid-column: 1 / -1;">
                         <label for="destination">Destino de Interés</label>
                         <select id="destination" class="form-control">
                             <option value="">Selecciona un destino</option>
-                            <option value="caribe">Caribe Colombiano</option>
-                            <option value="cancun">Cancún, México</option>
-                            <option value="puntacana">Punta Cana, R.D.</option>
-                            <option value="otro">Otro / No decidido</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="date">Fecha Tentativa</label>
+                        <label for="date">Fecha tentativa ida</label>
                         <input type="date" id="date" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="travelers">Número de Viajeros</label>
-                        <input type="number" id="travelers" class="form-control" min="1" value="1">
+                        <label for="date">Fecha tentativa regreso</label>
+                        <input type="date" id="date" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+                    <div class="form-group">
+                        <label for="travelers_adults">Adultos</label>
+                        <input type="number" id="travelers_adults" class="form-control" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="travelers_children">Niños (2 a 11 años)</label>
+                        <input type="number" id="travelers_children" class="form-control" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="travelers_infants">Bebés (menores de 2 años)</label>
+                        <input type="number" id="travelers_infants" class="form-control" min="0" value="0">
                     </div>
                 </div>
                 <div class="form-group">
@@ -207,6 +227,61 @@
 
     <script src="crm-service.js"></script>
     <script>
+        // Opciones de destino según el tipo seleccionado
+        const destinationOptions = {
+            nacional: [
+                { value: '', label: 'Selecciona un destino' },
+                { value: 'caribe', label: 'Caribe Colombiano' },
+                { value: 'eje-cafetero', label: 'Eje Cafetero' },
+                { value: 'cartagena', label: 'Cartagena' },
+                { value: 'san-andres', label: 'San Andrés' },
+                { value: 'medellin', label: 'Medellín' },
+                { value: 'bogota', label: 'Bogotá' },
+                { value: 'otro', label: 'Otro / No decidido' },
+            ],
+            internacional: [
+                { value: '', label: 'Selecciona un destino' },
+                { value: 'cancun', label: 'Cancún, México' },
+                { value: 'puntacana', label: 'Punta Cana, R.D.' },
+                { value: 'miami', label: 'Miami, EE.UU.' },
+                { value: 'orlando', label: 'Orlando, EE.UU.' },
+                { value: 'europa', label: 'Europa' },
+                { value: 'otro', label: 'Otro / No decidido' },
+            ]
+        };
+
+        const destinationTypeSelect = document.getElementById('destination_type');
+        const destinationRow = document.getElementById('destination-row');
+        const destinationSelect = document.getElementById('destination');
+
+        destinationTypeSelect.addEventListener('change', function () {
+            const type = this.value;
+
+            if (!type) {
+                destinationRow.style.display = 'none';
+                destinationSelect.value = '';
+                return;
+            }
+
+            // Poblar el select con las opciones del tipo elegido
+            destinationSelect.innerHTML = '';
+            destinationOptions[type].forEach(function (opt) {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.label;
+                destinationSelect.appendChild(option);
+            });
+
+            // Mostrar la fila con animación suave
+            destinationRow.style.display = 'grid';
+            destinationRow.style.opacity = '0';
+            requestAnimationFrame(function () {
+                destinationRow.style.transition = 'opacity 0.3s ease';
+                destinationRow.style.opacity = '1';
+            });
+        });
+    </script>
+    <script>
         document.getElementById('quote-form').addEventListener('submit', async function (e) {
             e.preventDefault();
 
@@ -218,9 +293,12 @@
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
+                destination_type: document.getElementById('destination_type').value,
                 destination: document.getElementById('destination').value,
                 tentative_date: document.getElementById('date').value,
-                travelers_count: document.getElementById('travelers').value,
+                travelers_adults: parseInt(document.getElementById('travelers_adults').value) || 1,
+                travelers_infants: parseInt(document.getElementById('travelers_infants').value) || 0,
+                travelers_children: parseInt(document.getElementById('travelers_children').value) || 0,
                 description: document.getElementById('message').value,
                 source: 'web_smarttrip_colombia' // Identificador de origen
             };
