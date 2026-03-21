@@ -96,11 +96,10 @@
         <aside
             class="hidden lg:flex w-64 flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 fixed h-full">
             <div class="p-6 flex items-center gap-3">
-                <div class="bg-primary p-2 rounded-lg"><span
-                        class="material-symbols-outlined text-white">travel_explore</span></div>
+                <img src="assets/logos/icono.png" alt="Logo" class="w-10 h-10">
                 <div>
                     <h1 class="text-primary font-bold text-lg leading-tight">SmartTrip</h1>
-                    <p class="text-xs text-slate-500 font-medium">Colombia Edition</p>
+                    <p class="text-xs text-slate-500 font-medium" align="center">Colombia</p>
                 </div>
             </div>
             <nav class="mt-6 px-4 space-y-2 flex-1">
@@ -108,7 +107,7 @@
                         class="material-symbols-outlined">dashboard</span><span
                         class="font-semibold text-sm">Panel</span></a>
                 <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
-                    href="html/my-trips.html"><span class="material-symbols-outlined">map</span><span
+                    href="destinations/my-trips.html"><span class="material-symbols-outlined">map</span><span
                         class="font-semibold text-sm">Mis viajes</span></a>
                 <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 transition-colors hover:bg-slate-100"
                     href="#"><span class="material-symbols-outlined">description</span><span
@@ -147,7 +146,7 @@
                     <span class="material-symbols-outlined text-slate-600" id="mobileMenuBtn">menu</span>
                     <span class="font-bold text-primary">SmartTrip</span>
                 </div>
-                <div class="hidden md:flex flex-1 max-w-md">
+                <!-- <div class="hidden md:flex flex-1 max-w-md">
                     <div class="relative w-full">
                         <span
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
@@ -155,7 +154,7 @@
                             class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-xl focus:ring-0 text-sm"
                             placeholder="Buscar vuelos..." type="text" />
                     </div>
-                </div>
+                </div> -->
                 <div class="flex items-center gap-3 lg:gap-6">
                     <div class="lg:hidden size-8 rounded-full bg-cover bg-center ring-2 ring-slate-100"
                         id="userMobileAvatar" style="background-image: url('https://ui-avatars.com/api/?name=User')">
@@ -172,6 +171,7 @@
             <div class="p-4 lg:p-8 space-y-8 hidden" id="mainContentArea">
                 <h1 class="text-3xl font-extrabold tracking-tight">Bienvenido de nuevo, <span
                         id="welcomeName">Viajero</span>!</h1>
+                <h2 class="text-2xl font-extrabold tracking-tight">Tu Próximo Viaje</h2>
 
                 <section class="@container">
                     <div class="relative overflow-hidden rounded-2xl bg-slate-900 shadow-xl group h-64">
