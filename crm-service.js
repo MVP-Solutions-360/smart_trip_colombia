@@ -252,6 +252,13 @@ class CRMConnector {
             return await this._request(`/client/trip/${identifier}`, { method: 'GET' });
         }
     }
+
+    /**
+     * Obtener detalle completo de un hotel por su ID de reserva
+     */
+    async getHotelDetails(hotelId) {
+        return await this._request(`/client/hotels/${hotelId}`, { method: 'GET' });
+    }
 }
 
 // Exportar instancia única para uso global
