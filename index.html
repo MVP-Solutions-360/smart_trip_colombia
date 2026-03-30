@@ -18,25 +18,7 @@
 </head>
 
 <body>
-  <nav class="navbar">
-    <div class="container">
-      <a href="index.html" class="logo">
-        <span class="material-symbols-outlined">explore</span>
-        SmartTrip<span>Colombia</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="destinations.html">Destinos</a></li>
-        <li><a href="packages.html">Planes de Viaje</a></li>
-        <li><a href="how-it-works.html">Cómo funciona</a></li>
-        <!-- <li><a href="about.html">Nosotros</a></li> -->
-        <!-- <li><a href="support.html">Soporte</a></li> -->
-      </ul>
-      <div class="nav-actions">
-        <a href="login.html" class="btn-ghost" style="margin-right: 8px;">Iniciar Sesión</a>
-        <a href="quote.html" class="btn-primary">Solicitar Cotización</a>
-      </div>
-    </div>
-  </nav>
+  <nav class="navbar"></nav>
 
   <header class="hero">
     <div class="container hero-content">
@@ -281,6 +263,10 @@
   </footer>
 
   <script src="crm-service.js"></script>
+  <script src="components/navbar.js"></script>
+  <script>
+    SmartTripNavbar.init();
+  </script>
   <script src="main.js"></script>
 </body>
 
