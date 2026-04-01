@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Viaje | SmartTrip Colombia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-section {
+            background: var(--bg-light);
+            padding-bottom: 60px;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .carousel-track {
+            height: 100%;
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.9);
+            color: var(--primary);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-btn:hover { background: white; scale: 1.1; }
+        .carousel-prev { left: 20px; }
+        .carousel-next { right: 20px; }
+
+        /* Table Styles */
+        .fare-table-wrapper {
+            background: white;
+            border-radius: 20px;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            margin: 40px 0;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 18px 12px;
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-main);
+        }
+
+        .hotel-cell {
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 150px;
+            padding-left: 24px;
+        }
+
+        .price-val { font-weight: 600; color: #0f172a; }
+        .empty-val { color: #cbd5e1; font-style: italic; }
+
+        /* General UI */
+        .header-content {
+            padding-top: 40px;
+            margin-bottom: 30px;
+        }
+
+        .interested-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 48px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .rich-content { margin-bottom: 40px; line-height: 1.8; }
+        .section-title { font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin-bottom: 24px; color: var(--text-main); }
+
+        @media (max-width: 1024px) {
+            .carousel-container { height: 350px; }
+            th, td { padding: 12px 8px; font-size: 12px; }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar"></nav>
+
+    <div id="loader" class="container" style="padding: 100px 0; text-align: center;">
+        <div class="loading-spinner">Sincronizando detalles...</div>
+    </div>
+
+    <div id="main-content" style="display: none;">
+        <!-- Header Info -->
+        <header class="header-content">
+            <div class="container">
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--primary); font-weight: 700; margin-bottom: 12px;">
+                    <span class="material-symbols-outlined">explore</span>
+                    <span id="pkg-dest-label">DESTINO</span>
+                </div>
+                <h1 id="pkg-title" style="font-size: 3.5rem; font-family: 'Outfit', sans-serif; line-height: 1.1;">---</h1>
+                <p id="pkg-origin-label" style="font-size: 1.25rem; color: var(--text-muted); margin-top: 12px;">---</p>
+            </div>
+        </header>
+
+        <!-- Image Carousel -->
+        <div class="container">
+            <div class="carousel-container" id="pkg-gallery">
+                <div class="carousel-track" id="carousel-track">
+                    <!-- Slides inyectados -->
+                </div>
+                <button class="carousel-btn carousel-prev" id="prevBtn">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button class="carousel-btn carousel-next" id="nextBtn">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="rich-content">
+                <div class="section-title">¿Qué incluye el plan?</div>
+                <div id="pkg-include" class="rich-text card" style="padding: 32px; border-radius: 20px;">---</div>
+            </div>
+
+            <!-- Tabla de Tarifas por Salida -->
+            <div id="schedules-tables-container">
+                <!-- Aquí se inyectarán las tablas de cada salida -->
+            </div>
+
+            <div class="rich-content" style="margin-top: 60px;">
+                <div class="section-title">Detalles adicionales e Itinerario</div>
+                <div id="pkg-details" class="rich-text card" style="padding: 32px; border-radius: 20px;">---</div>
+            </div>
+
+            <!-- Card ¿Interesado? -->
+            <div class="interested-card">
+                <span class="material-symbols-outlined" style="font-size: 64px; margin-bottom: 16px;">contact_support</span>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; margin-bottom: 16px; color: white;">¿Tienes dudas sobre este viaje?</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9; max-width: 600px; margin: 0 auto 32px;">Nuestros asesores están listos para ayudarte a planificar la mejor experiencia para ti y tu familia.</p>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn-primary" style="background: white; color: var(--primary); padding: 16px 40px;" onclick="window.location.href='../quote.html'">Solicitar Cotización Gratis</button>
+                    <a href="https://wa.me/573000000000" class="btn-secondary" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid white; padding: 16px 40px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                        <i class="fab fa-whatsapp"></i> Hablar con un asesor
+                    </a>
+                </div>
+            </div>
+
+            <div style="margin: 60px 0; text-align: center;">
+                <a href="../packages.html" style="color: var(--text-muted); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    Volver al catálogo de paquetes
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer style="margin-top: 80px;">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 SmartTrip Colombia. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../crm-service.js"></script>
+    <script src="../components/navbar.js"></script>
+    <script>
+        SmartTripNavbar.init();
+
+        const priceFormatter = new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            maximumFractionDigits: 0
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const packageId = params.get('id');
+
+            if (!packageId) return;
+
+            try {
+                const response = await window.CRM.getPackageDetail(packageId);
+                const pkg = response.data;
+                
+                if (!pkg) throw new Error("No pudimos encontrar este paquete.");
+
+                // Poblar info
+                document.getElementById('pkg-title').textContent = pkg.title;
+                document.getElementById('pkg-dest-label').textContent = pkg.destination?.toUpperCase();
+                document.getElementById('pkg-origin-label').textContent = `Salida desde ${pkg.origin || 'Colombia'}`;
+                document.getElementById('pkg-include').innerHTML = pkg.include || 'Información no disponible.';
+                document.getElementById('pkg-details').innerHTML = (pkg.details || '') + (pkg.itinerary || '');
+
+                // Cargar Galería
+                initGallery(pkg.gallery_images, pkg.main_image);
+
+                // Cargar tablas de precios por salida
+                renderSchedulesTables(pkg.schedules || []);
+
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loader').innerHTML = `<div style="padding: 60px; color: #ef4444;">Error cargando detalles: ${error.message}</div>`;
+            }
+        });
+
+        function initGallery(images = [], mainImage) {
+            const track = document.getElementById('carousel-track');
+            const gallery = [mainImage, ...images].filter(img => img);
+            
+            if (gallery.length === 0) {
+                document.getElementById('pkg-gallery').style.display = 'none';
+                return;
+            }
+
+            gallery.forEach(img => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `<img src="${img}" alt="Galería">`;
+                track.appendChild(slide);
+            });
+
+            let currentSlide = 0;
+            const totalSlides = gallery.length;
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            });
+
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            });
+        }
+
+        function renderSchedulesTables(schedules) {
+            const container = document.getElementById('schedules-tables-container');
+            container.innerHTML = '';
+
+            if (schedules.length === 0) {
+                container.innerHTML = `<p class="card" style="padding: 24px; text-align: center; color: var(--text-muted);">No hay salidas vigentes disponibles.</p>`;
+                return;
+            }
+
+            schedules.forEach(sch => {
+                const section = document.createElement('div');
+                section.style.marginBottom = '60px';
+                
+                section.innerHTML = `
+                    <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px;">
+                        <h3 style="margin: 0;">Salida: ${sch.start_date} al ${sch.end_date || ''}</h3>
+                        <span class="badge-status" style="background: ${sch.available_units > 0 ? '#16a34a' : '#ef4444'}">
+                            ${sch.available_units > 0 ? `${sch.available_units} Cupos disponibles` : 'Agotado'}
+                        </span>
+                    </div>
+                `;
+
+                // Pivotar tarifas: Agrupar por Hotel y Plan Alimentación
+                const groups = {};
+                (sch.fares || []).forEach(f => {
+                    const key = `${f.hotel || 'Único'}_${f.meal_plan || 'Estándar'}`;
+                    if (!groups[key]) groups[key] = { hotel: f.hotel || 'General', plan: f.meal_plan || 'Estándar', values: {} };
+                    
+                    // Guardamos el precio según acomodación y tipo pajajeros
+                    const subKey = `${f.accommodation_type}_${f.passenger_type}`;
+                    groups[key].values[subKey] = f.fare;
+                });
+
+                const tableWrapper = document.createElement('div');
+                tableWrapper.className = 'fare-table-wrapper';
+                
+                let rowsHtml = '';
+                Object.values(groups).forEach(g => {
+                    rowsHtml += `
+                        <tr>
+                            <td class="hotel-cell">${g.hotel}</td>
+                            <td class="price-val">${formatPrice(g.values['single_adult'])}</td>
+                            <td class="price-val">${formatPrice(g.values['double_adult'])}</td>
+                            <td class="price-val">${formatPrice(g.values['triple_adult'])}</td>
+                            <td class="price-val">${formatPrice(g.values['child_child'] || g.values['double_child'])}</td>
+                            <td class="price-val">${formatPrice(g.values['infant_infant'])}</td>
+                            <td>${g.plan}</td>
+                            <td>${determineAccommodationType(g.values)}</td>
+                        </tr>
+                    `;
+                });
+
+                tableWrapper.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align: left; padding-left: 24px;">Hotel</th>
+                                <th>Sencilla</th>
+                                <th>Doble</th>
+                                <th>Triple</th>
+                                <th>Niño</th>
+                                <th>Infante</th>
+                                <th>Plan Alimentación</th>
+                                <th>Acomodación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml || '<tr><td colspan="8" style="padding: 40px; color: var(--text-muted);">No hay tarifas detalladas para esta salida.</td></tr>'}
+                        </tbody>
+                    </table>
+                `;
+
+                section.appendChild(tableWrapper);
+                container.appendChild(section);
+            });
+        }
+
+        function formatPrice(val) {
+            return val ? priceFormatter.format(val) : '<span class="empty-val">N/A</span>';
+        }
+
+        function determineAccommodationType(values) {
+            if (values['triple_adult']) return "Familiar";
+            if (values['double_adult']) return "Pareja/Doble";
+            return "General";
+        }
+    </script>
+</body>
+
+</html>

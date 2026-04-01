@@ -11,6 +11,9 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, observerOptions);
 
+// Exportamos el observador para que scripts dinámicos puedan usarlo
+window.observer = observer;
+
 document.addEventListener('DOMContentLoaded', () => {
   const animatedElements = document.querySelectorAll('.destination-card, .step-item, .package-card, .dashboard-text, .mockup-display');
 

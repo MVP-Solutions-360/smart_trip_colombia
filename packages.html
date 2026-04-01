@@ -13,6 +13,54 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .filter-btn {
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .loading-spinner {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+    </style>
 </head>
 
 <body>
@@ -26,42 +74,19 @@
         </div>
     </header>
 
+    <section style="padding-bottom: 0;">
+        <div class="container">
+            <div id="destination-filters" class="filters-container">
+                <button class="filter-btn active" data-destination="all">Todos</button>
+            </div>
+        </div>
+    </section>
+
     <section>
         <div class="container">
-            <div class="packages-grid">
-                <div class="package-card">
-                    <div class="package-image"><img src="assets/caribe.png" alt="Playa Blanca, Cartagena"></div>
-                    <div class="package-content">
-                        <p class="package-dest">Colombia</p>
-                        <h3>Escapada Insular Cartagena</h3>
-                        <p style="font-size: 14px; color: var(--text-muted); margin: 8px 0;">3 Días / 2 Noches - Isla
-                            privada</p>
-                        <p class="package-price">$1,450,000 COP</p>
-                        <button class="btn-primary" style="width: 100%; margin-top: 16px;">Ver Detalles</button>
-                    </div>
-                </div>
-                <div class="package-card">
-                    <div class="package-image"><img src="assets/cancun.png" alt="Riviera Maya"></div>
-                    <div class="package-content">
-                        <p class="package-dest">México</p>
-                        <h3>Riviera Maya Explorer</h3>
-                        <p style="font-size: 14px; color: var(--text-muted); margin: 8px 0;">7 Días / 6 Noches - Cultura
-                            y diversión</p>
-                        <p class="package-price">$4,850,000 COP</p>
-                        <button class="btn-primary" style="width: 100%; margin-top: 16px;">Ver Detalles</button>
-                    </div>
-                </div>
-                <div class="package-card">
-                    <div class="package-image"><img src="assets/puntacana.png" alt="Resort Punta Cana"></div>
-                    <div class="package-content">
-                        <p class="package-dest">R. Dominicana</p>
-                        <h3>Luxury Paradise Punta Cana</h3>
-                        <p style="font-size: 14px; color: var(--text-muted); margin: 8px 0;">5 Días / 4 Noches - Todo
-                            incluido Premium</p>
-                        <p class="package-price">$5,200,000 COP</p>
-                        <button class="btn-primary" style="width: 100%; margin-top: 16px;">Ver Detalles</button>
-                    </div>
-                </div>
+            <div id="packages-grid" class="packages-grid">
+                <!-- Los paquetes se cargarán dinámicamente aquí -->
+                <div class="loading-spinner">Cargando experiencias...</div>
             </div>
         </div>
     </section>
@@ -117,6 +142,126 @@
         <script src="components/navbar.js"></script>
         <script>
           SmartTripNavbar.init({ activeLink: 'packages' });
+
+          document.addEventListener('DOMContentLoaded', async () => {
+              const grid = document.getElementById('packages-grid');
+              const filterContainer = document.getElementById('destination-filters');
+
+              // 1. Cargar Destinos y crear filtros
+              async function loadFilters() {
+                  try {
+                      const response = await window.CRM.getPublicDestinations();
+                      // En local a veces no viene success, pero sí data
+                      const destinations = response.data || (Array.isArray(response) ? response : []);
+
+                      if (destinations && destinations.length > 0) {
+                          destinations.forEach(dest => {
+                              const btn = document.createElement('button');
+                              btn.className = 'filter-btn';
+                              btn.textContent = dest;
+                              btn.dataset.destination = dest;
+                              filterContainer.appendChild(btn);
+                          });
+
+                          // Añadir eventos a los botones
+                          document.querySelectorAll('.filter-btn').forEach(btn => {
+                              btn.addEventListener('click', () => {
+                                  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                                  btn.classList.add('active');
+                                  loadPackages(btn.dataset.destination === 'all' ? null : btn.dataset.destination);
+                              });
+                          });
+                      }
+                  } catch (error) {
+                      console.error("Error cargando destinos:", error);
+                  }
+              }
+
+              // 2. Cargar Paquetes
+              async function loadPackages(destination = null) {
+                  grid.innerHTML = '<div class="loading-spinner">Buscando las mejores experiencias para ti...</div>';
+
+                  try {
+                      const filters = destination ? { destination } : {};
+                      const response = await window.CRM.getPublicPackages(filters);
+
+                      // El API puede devolver los datos directamente en response.data
+                      const packages = response.data || [];
+
+                      if (packages.length > 0) {
+                          grid.innerHTML = '';
+                          packages.forEach(pkg => {
+                              const card = renderPackageCard(pkg);
+                              grid.appendChild(card);
+                          });
+
+                          // Re-ejecutar animaciones de reveal si main.js está cargado
+                          if (window.observer) {
+                              document.querySelectorAll('.package-card').forEach(el => {
+                                  el.classList.add('reveal');
+                                  window.observer.observe(el);
+                              });
+                          }
+                      } else {
+                          grid.innerHTML = `
+                            <div class="no-results">
+                                <span class="material-symbols-outlined" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;">sentiment_dissatisfied</span>
+                                <h3>No se encontraron paquetes activos</h3>
+                                <p>Prueba con otro destino o regresa más tarde.</p>
+                            </div>`;
+                      }
+                  } catch (error) {
+                      console.error("Error cargando paquetes:", error);
+                      grid.innerHTML = `
+                        <div class="no-results">
+                            <span class="material-symbols-outlined" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;">error</span>
+                            <h3>Error de conexión</h3>
+                            <p>No pudimos conectar con el servidor para traer las ofertas. Por favor intenta de nuevo.</p>
+                        </div>`;
+                  }
+              }
+
+              function renderPackageCard(pkg) {
+                  const div = document.createElement('div');
+                  div.className = 'package-card reveal';
+
+                  // Intentar calcular duración desde el primer schedule
+                  let durationText = "Plan Especial";
+                  if (pkg.schedules && pkg.schedules[0] && pkg.schedules[0].start_date && pkg.schedules[0].end_date) {
+                      const start = new Date(pkg.schedules[0].start_date);
+                      const end = new Date(pkg.schedules[0].end_date);
+                      const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                      const nights = days - 1;
+                      durationText = `${days} Días / ${nights} ${nights === 1 ? 'Noche' : 'Noches'}`;
+                  }
+
+                  const price = new Intl.NumberFormat('es-CO', {
+                      style: 'currency',
+                      currency: 'COP',
+                      maximumFractionDigits: 0
+                  }).format(pkg.min_price || 0);
+
+                  div.innerHTML = `
+                      <div class="package-image">
+                          <img src="${pkg.main_image || 'assets/placeholder.png'}" alt="${pkg.title}" onerror="this.src='https://images.unsplash.com/photo-1544333346-6014ba3623ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                      </div>
+                      <div class="package-content">
+                          <p class="package-dest">${pkg.destination}</p>
+                          <h3>${pkg.title}</h3>
+                          <p style="font-size: 14px; color: var(--text-muted); margin: 8px 0;">
+                              ${durationText} - Salida desde ${pkg.origin || 'Colombia'}
+                          </p>
+                          <p class="package-price">${price} COP</p>
+                          <button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="window.location.href='packages/packages_schedules.html?id=${pkg.id}'">Ver Detalles</button>
+                      </div>
+                  `;
+                  return div;
+              }
+
+              // Inicialización
+              await loadFilters();
+              await loadPackages();
+          });
         </script>
         <script src="main.js"></script>
 </body>

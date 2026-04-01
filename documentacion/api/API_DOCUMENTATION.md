@@ -226,9 +226,9 @@ GET /v1/client/search?query={search_term}
     "data": [
         {
             "id": 1,
-            "name": "Lady Vanessa Paredes Salas",
-            "email": "vanessaparedes186@gmail.com",
-            "phone": "3001234567"
+            "name": "Maicol Londoño",
+            "email": "maicoll4966@gmail.com",
+            "phone": "3506852261"
         }
     ],
     "count": 1
@@ -309,7 +309,187 @@ POST /v1/client/login
 }
 ```
 
-#### **9. Listar Paquetes de una Agencia**
+#### **9. Listar Paquetes Públicos (Secciones por destino)**
+```
+GET /v1/packages
+```
+**Descripción:** Devuelve todos los paquetes publicados en el CRM listos para mostrarse en la web pública, con opción de filtrar por destino, agencia o palabra clave.
+
+**Parámetros de consulta:**
+- `destination` (opcional): Nombre exacto del destino que selecciona el cliente.
+- `agency` (opcional): Slug de la agencia para limitar los resultados.
+- `status` (opcional): Estado del paquete (`active` por defecto).
+- `per_page` (opcional): Límite por página (1-50, default 12).
+- `search` (opcional): Texto libre en título / origen / destino.
+- `only_active_schedules` (opcional): `true` por defecto. Si es `false`, devuelve todas las salidas.
+
+**Respuesta exitosa (200):**
+```json
+{
+    "data": [
+        {
+            "id": 87,
+            "title": "Caribe Premium",
+            "origin": "Medellín",
+            "destination": "Cartagena",
+            "status": "active",
+            "valid_from": "2026-04-01",
+            "valid_until": "2026-12-15",
+            "include": "<p>Vuelo + Hotel + Traslados</p>",
+            "main_image": "https://mvpsolutions365.com/storage/packages/caribe-premium.jpg",
+            "gallery_images": [
+                "https://mvpsolutions365.com/storage/packages/gallery/caribe-1.jpg"
+            ],
+            "document_file": "https://mvpsolutions365.com/storage/packages/docs/caribe.pdf",
+            "min_price": 1850000,
+            "max_price": 2450000,
+            "agency": {
+                "id": 3,
+                "name": "MVP Travel",
+                "slug": "mvp-travel"
+            },
+            "schedules": [
+                {
+                    "id": 145,
+                    "start_date": "2026-05-10",
+                    "end_date": "2026-05-15",
+                    "status": "active",
+                    "status_label": "Activa",
+                    "available_units": 12,
+                    "min_fare": 1850000,
+                    "max_fare": 2100000,
+                    "fares": [
+                        {
+                            "id": 411,
+                            "passenger_type": "adult",
+                            "accommodation_type": "double",
+                            "fare": 1850000,
+                            "currency": "COP"
+                        }
+                    ]
+                }
+            ],
+            "created_at": "2026-03-15T13:45:21Z",
+            "updated_at": "2026-03-18T09:11:02Z"
+        }
+    ],
+    "links": {
+        "first": "https://mvpsolutions365.com/api/v1/packages?page=1",
+        "last": "https://mvpsolutions365.com/api/v1/packages?page=1",
+        "prev": null,
+        "next": null
+    },
+    "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "path": "https://mvpsolutions365.com/api/v1/packages",
+        "per_page": 12,
+        "to": 1,
+        "total": 1
+    },
+    "success": true,
+    "filters": {
+        "destination": "Cartagena",
+        "agency": "mvp-travel",
+        "status": "active",
+        "only_active_schedules": true
+    }
+}
+```
+
+#### **10. Mostrar Paquete Público**
+```
+GET /v1/packages/{id}
+```
+**Descripción:** Devuelve el detalle completo de un paquete (para modal, landing o SEO). Se pueden ocultar las salidas inactivas con `only_active_schedules=true`.
+
+**Respuesta exitosa (200):**
+```json
+{
+    "data": {
+        "id": 87,
+        "title": "Caribe Premium",
+        "origin": "Medellín",
+        "destination": "Cartagena",
+        "status": "active",
+        "valid_from": "2026-04-01",
+        "valid_until": "2026-12-15",
+        "include": "<p>Vuelo + Hotel + Traslados</p>",
+        "no_include": "<p>Gastos personales</p>",
+        "itinerary": "<p>Día 1 llegada...</p>",
+        "details": "<p>Plan completo</p>",
+        "main_image": "https://mvpsolutions365.com/storage/packages/caribe-premium.jpg",
+        "gallery_images": [
+            "https://mvpsolutions365.com/storage/packages/gallery/caribe-1.jpg",
+            "https://mvpsolutions365.com/storage/packages/gallery/caribe-2.jpg"
+        ],
+        "document_file": "https://mvpsolutions365.com/storage/packages/docs/caribe.pdf",
+        "min_price": 1850000,
+        "max_price": 2450000,
+        "agency": {
+            "id": 3,
+            "name": "MVP Travel",
+            "slug": "mvp-travel"
+        },
+        "schedules": [
+            {
+                "id": 145,
+                "start_date": "2026-05-10",
+                "end_date": "2026-05-15",
+                "status": "active",
+                "available_units": 12,
+                "notes": "Promo Semana Madre",
+                "min_fare": 1850000,
+                "max_fare": 2100000,
+                "fares": [
+                    {
+                        "id": 411,
+                        "passenger_type": "adult",
+                        "accommodation_type": "double",
+                        "fare": 1850000,
+                        "currency": "COP",
+                        "meal_plan": "AI"
+                    }
+                ]
+            }
+        ],
+        "created_at": "2026-03-15T13:45:21Z",
+        "updated_at": "2026-03-18T09:11:02Z"
+    },
+    "success": true
+}
+```
+
+#### **11. Destinos Públicos Disponibles**
+```
+GET /v1/packages/destinations
+```
+**Descripción:** Lista los destinos únicos con paquetes publicados. Útil para construir menús, pestañas o carruseles por destino.
+
+**Parámetros de consulta (opcionales):**
+- `agency`: Slug de la agencia si deseas limitar la respuesta.
+- `status`: Estado del paquete (default `active`).
+- `only_active_schedules`: true por defecto.
+
+**Respuesta exitosa (200):**
+```json
+{
+    "success": true,
+    "data": [
+        "Cartagena",
+        "La Guajira",
+        "San Andres"
+    ],
+    "filters": {
+        "agency": null,
+        "status": "active",
+        "only_active_schedules": true
+    }
+}
+```
+
+#### **12. Listar Paquetes de una Agencia**
 ```
 GET /v1/agency/{slug}/packages
 ```
@@ -359,7 +539,7 @@ GET /v1/agency/{slug}/packages
 }
 ```
 
-#### **10. Mostrar Paquete Específico**
+#### **13. Mostrar Paquete Específico**
 ```
 GET /v1/agency/{slug}/packages/{id}
 ```
@@ -419,7 +599,7 @@ GET /v1/agency/{slug}/packages/{id}
 }
 ```
 
-#### **11. Obtener Destinos de Paquetes**
+#### **14. Obtener Destinos de Paquetes**
 ```
 GET /v1/agency/{slug}/packages/destinations
 ```
@@ -444,7 +624,7 @@ GET /v1/agency/{slug}/packages/destinations
 }
 ```
 
-#### **12. Obtener Paquetes Destacados**
+#### **15. Obtener Paquetes Destacados**
 ```
 GET /v1/agency/{slug}/packages/featured
 ```
@@ -599,6 +779,66 @@ GET /v1/client/quotations/{id}/services/medical-assists
 ```
 GET /v1/client/trip/{slug}
 ```
+
+#### **6. Detalle de Reserva de Hotel**
+```
+GET /v1/client/hotels/{id}
+```
+**Descripción:**
+Obtiene la información completa de una reserva de hotel específica, incluyendo imágenes y detalles de las habitaciones.
+
+**Headers:**
+- `Authorization: Bearer {token}`
+- `Accept: application/json`
+
+**Ejemplo Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Hotel Cartagena Plaza",
+    "arrival_date": "2024-06-15",
+    "departure_date": "2024-06-20",
+    "room_type": "Suite",
+    "type_food": "Todo incluido",
+    "total_rooms": 2,
+    "adult": 4,
+    "children": 1,
+    "infant": 0,
+    "fare": 1500000,
+    "total_fare": 1800000,
+    "status": "aprobado",
+    "status_label": "Aprobado",
+    "provider": {
+      "id": 5,
+      "name": "Hotelbeds"
+    },
+    "images": [
+      {
+        "id": 10,
+        "url": "https://mvpsolutions365.com/storage/hotels/room1.jpg",
+        "thumbnail": "https://mvpsolutions365.com/storage/hotels/thumbnails/room1_thumb.jpg",
+        "is_main": true
+      }
+    ],
+    "details": [
+      {
+        "id": 20,
+        "room_type": "Suite Ejecutiva",
+        "number_of_rooms": 1,
+        "view_type": "vista al mar",
+        "meal_plan": "todo incluido",
+        "nights": 5,
+        "price": 300000,
+        "total_price": 1500000
+      }
+    ]
+  }
+}
+```
+
+---
 **Descripción:**
 Obtiene toda la información del viaje del cliente, incluyendo:
 - datos del viaje

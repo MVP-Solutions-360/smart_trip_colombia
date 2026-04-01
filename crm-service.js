@@ -7,8 +7,16 @@ class CRMConnector {
         // En desarrollo local con Vite, usamos el Proxy para evitar CORS
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-        // Restauramos /v1 en la base para que todas las rutas lo tengan por defecto
-        this.baseUrl = isLocal ? '/api/v1' : 'https://mvpsolutions365.com/api/v1';
+        // Base URL dinámica: usa el proxy si estamos en un puerto de Vite (ej: 5173, 5174)
+        const isVite = window.location.port !== '' && window.location.port !== '80' && window.location.port !== '443';
+        
+        if (isVite) {
+            this.baseUrl = '/api/v1'; // Usa el proxy de vite.config.js para evitar CORS
+        } else if (isLocal) {
+            this.baseUrl = 'http://127.0.0.1:8000/api/v1'; // Conexión directa al backend artisan desde Apache
+        } else {
+            this.baseUrl = 'https://mvpsolutions365.com/api/v1'; // Configuración de producción
+        }
 
         console.log(`>>> CRM SERVICE LOADED V6 (Base: ${this.baseUrl}) <<<`);
 
@@ -37,17 +45,13 @@ class CRMConnector {
         const config = {
             ...options,
             headers: { ...headers, ...options.headers },
-            // Cambiamos a 'include' por si el servidor usa cookies de sesión junto al token
             credentials: 'include'
         };
 
-        console.log(`--- API REQ V7 ---: ${options.method || 'GET'} ${url}`);
-        if (token) console.log(`--- TOKEN SENT ---: ${token.substring(0, 15)}...`);
+        console.log(`--- API REQ ---: ${options.method || 'GET'} ${url}`);
 
         try {
             const response = await fetch(url, config);
-
-            // Intentar leer la respuesta como texto primero para evitar errores de parseo
             const responseText = await response.text();
             let data = {};
 
@@ -78,189 +82,54 @@ class CRMConnector {
 
     // --- 1. GESTIÓN DE AUTENTICACIÓN ---
 
-    /**
-     * Login de Usuario Administrativo
-     */
     async loginUser(email, password) {
-        try {
-            const response = await this._request('/auth/login', {
-                method: 'POST',
-                body: JSON.stringify({ email, password })
-            });
-
-            console.log(">>> FULL CRM LOGIN RESPONSE:", JSON.stringify(response));
-
-            // Extraer token de múltiples niveles posibles
-            const token = response.token || (response.data && response.data.token) ||
-                response.access_token || (response.data && response.data.access_token);
-
-            // Extraer datos de usuario si vienen en el login
-            const userData = response.user || response.data?.user || response.data;
-
-            if (token) {
-                localStorage.setItem(this.tokenKey, token.trim());
-                response.token = token.trim();
-
-                // Guardamos el perfil inmediatamente para que el dashboard no dependa de /me
-                if (userData && userData.name) {
-                    localStorage.setItem('crm_user_profile', JSON.stringify(userData));
-                    console.log(">>> Perfil de usuario guardado localmente:", userData.name);
-                }
-            }
-
-            return response;
-        } catch (error) {
-            throw error;
-        }
+        const response = await this._request('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password })
+        });
+        const token = response.token || response.data?.token || response.access_token || response.data?.access_token;
+        if (token) localStorage.setItem(this.tokenKey, token.trim());
+        return response;
     }
 
-    /**
-     * Login de Cliente
-     */
     async loginClient(email, password) {
-        try {
-            const response = await this._request('/client/login', {
-                method: 'POST',
-                body: JSON.stringify({ email, password })
-            });
-
-            console.log("Respuesta de Login de Cliente:", response);
-
-            const token = response.token || (response.data && response.data.token) ||
-                response.access_token || (response.data && response.data.access_token);
-
-            if (token) {
-                localStorage.setItem(this.clientTokenKey, token);
-                response.token = token;
-            }
-
-            return response;
-        } catch (error) {
-            throw error;
-        }
+        const response = await this._request('/client/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password })
+        });
+        const token = response.token || response.data?.token || response.access_token || response.data?.access_token;
+        if (token) localStorage.setItem(this.clientTokenKey, token.trim());
+        return response;
     }
 
-    /**
-     * Obtener perfil del usuario actual (Sanctum)
-     */
-    async getMe() {
-        return await this._request('/auth/me');
-    }
-
-    /**
-     * Cerrar Sesión y limpiar rastro
-     */
     logout() {
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.clientTokenKey);
-        // Intentar limpiar cookies para evitar que Sanctum las use en lugar del Bearer
-        document.cookie.split(";").forEach((c) => {
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    }
+
+    // --- 2. CONSUMO DE DATOS PAQUETES ---
+
+    async getPublicPackages(filters = {}) {
+        const queryParams = new URLSearchParams({
+            status: 'active',
+            only_active_schedules: true,
+            ...filters
         });
-        console.log("Sesión y cookies del navegador limpiadas.");
+        return await this._request(`/packages?${queryParams.toString()}`, { method: 'GET' });
     }
 
-    /**
-     * Verificar si la sesión sigue activa
-     */
-    async checkAuth() {
-        try {
-            return await this._request('/auth/check', { method: 'GET' });
-        } catch (error) {
-            this.logout();
-            return false;
-        }
+    async getPublicDestinations() {
+        return await this._request('/packages/destinations', { method: 'GET' });
     }
 
-    /**
-     * Cerrar sesión y limpiar tokens
-     */
-    logout() {
-        console.log("CRM Logout called");
-        console.trace();
-        localStorage.removeItem(this.tokenKey);
-        localStorage.removeItem(this.clientTokenKey);
+    async getPackageDetail(id) {
+        return await this._request(`/packages/${id}?only_active_schedules=true`, { method: 'GET' });
     }
 
-    // --- 2. CONSUMO DE DATOS ---
-
-    /**
-     * Obtener información pública de la agencia
-     */
-    async getAgencyInfo(slug = this.slug) {
-        return await this._request(`/agency/${slug}`, { method: 'GET' });
-    }
-
-    /**
-     * Listar paquetes turísticos de la agencia
-     */
-    async getPackages(slug = this.slug) {
-        return await this._request(`/agency/${slug}/packages`, { method: 'GET' });
-    }
-
-    /**
-     * Enviar nueva solicitud de cotización (Leads)
-     */
-    async sendQuotation(quotationData) {
-        return await this._request('/quotation', {
-            method: 'POST',
-            body: JSON.stringify(quotationData)
-        });
-    }
-
-    /**
-     * Crear una tarea o consulta (Recordatorios)
-     */
-    async createTask(taskData) {
-        return await this._request('/task', {
-            method: 'POST',
-            body: JSON.stringify(taskData)
-        });
-    }
-
-    /**
-     * Listar cotizaciones del cliente autenticado
-     */
-    async getClientQuotations() {
-        return await this._request('/client/quotations', { method: 'GET' });
-    }
-
-    /**
-     * Obtener servicios vinculados a una cotización específica
-     */
-    async getQuotationServices(quotationId) {
-        return await this._request(`/client/quotations/${quotationId}/services`, { method: 'GET' });
-    }
-
-    /**
-     * Obtener detalle completo del viaje por slug o ID de cotización
-     */
-    async getTripDetails(identifier) {
-        // Limpiar en caso de que el front haya enviado "trip-123" en lugar del puro ID
-        if (identifier && typeof identifier === 'string' && identifier.startsWith('trip-')) {
-            identifier = identifier.replace('trip-', '');
-        }
-
-        // Verificar si contiene solo números
-        const isNumeric = /^\d+$/.test(identifier);
-
-        if (isNumeric) {
-            // Si Laravel no nos mandó el slug y solo tenemos el ID, usamos el endpoint de quotations get by ID
-            return await this._request(`/client/quotations/${identifier}`, { method: 'GET' });
-        } else {
-            // Si tenemos el slug de verdad (ej. "plan-turistico-madrid")
-            return await this._request(`/client/trip/${identifier}`, { method: 'GET' });
-        }
-    }
-
-    /**
-     * Obtener detalle completo de un hotel por su ID de reserva
-     */
-    async getHotelDetails(hotelId) {
-        return await this._request(`/client/hotels/${hotelId}`, { method: 'GET' });
+    async getPublicSchedule(id) {
+        return await this._request(`/packages/schedules/${id}`, { method: 'GET' });
     }
 }
 
-// Exportar instancia única para uso global
 const crm = new CRMConnector();
-window.CRM = crm; // Disponible globalmente en el navegador
+window.CRM = crm;

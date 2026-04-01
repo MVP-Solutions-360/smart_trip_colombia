@@ -1,428 +1,227 @@
-# 🎒 **EJEMPLOS DE USO - API DE PAQUETES**
+# EJEMPLOS DE USO - API DE PAQUETES
 
-## 🎯 **DESCRIPCIÓN**
+## Descripcion
 
-Este archivo contiene ejemplos prácticos para probar la API de paquetes desde tu sitio web. La API te permitirá mostrar todos los paquetes turísticos que crees en el CRM.
-
----
-
-## ✨ **NUEVOS CAMPOS DISPONIBLES**
-
-### **Campos agregados recientemente:**
-
-- **`status`**: Estado del paquete (`active` = Activo, `inactive` = Inactivo)
-- **`valid_from`**: Fecha de inicio de validez del paquete (formato: YYYY-MM-DD)
-- **`valid_until`**: Fecha de fin de validez del paquete (formato: YYYY-MM-DD)
-- **`available_units`**: Cantidad de unidades disponibles para reserva
-
-### **Filtros adicionales:**
-
-- **`package_status`**: Filtrar paquetes por su estado (active/inactive)
-- **`status`**: Filtrar por estado de las salidas del paquete
+Este archivo resume como consumir la API del modulo de paquetes desde el sitio web publico y desde las integraciones internas. La nueva API publica permite renderizar las secciones por destino directamente con los datos creados en el CRM.
 
 ---
 
-## 🌐 **ENDPOINTS DISPONIBLES**
+## Nuevos campos disponibles
 
-### **1. Listar Paquetes de una Agencia**
-```
-GET /api/v1/agency/{slug}/packages
-```
+### Campos agregados recientemente
+- `status`: Estado del paquete (`active` o `inactive`).
+- `valid_from`: Fecha de inicio de validez (YYYY-MM-DD).
+- `valid_until`: Fecha de fin de validez (YYYY-MM-DD).
+- `available_units`: Cupo de unidades.
 
-### **2. Mostrar Paquete Específico**
-```
-GET /api/v1/agency/{slug}/packages/{id}
-```
-
-### **3. Obtener Destinos de Paquetes**
-```
-GET /api/v1/agency/{slug}/packages/destinations
-```
-
-### **4. Obtener Paquetes Destacados**
-```
-GET /api/v1/agency/{slug}/packages/featured
-```
+### Filtros adicionales
+- `package_status`: Filtra por estado del paquete en las rutas por agencia.
+- `status`: Filtra por estado de la salida (`active`, `inactive`, `cancelled`).
+- `only_active_schedules`: (API publica) controla si se devuelven solo salidas activas.
 
 ---
 
-## 🧪 **EJEMPLOS DE TESTING**
+## Endpoints disponibles
 
-### **Base URL para desarrollo:**
-```
-https://mvpsolutions365.com/api/v1
-```
+### API publica para la web
+1. `GET /api/v1/packages`
+2. `GET /api/v1/packages/{id}`
+3. `GET /api/v1/packages/destinations`
 
-### **Base URL para producción:**
-```
-https://mvpsolutions365.com/api/v1
-```
+### API por agencia (backoffice)
+1. `GET /api/v1/agency/{slug}/packages`
+2. `GET /api/v1/agency/{slug}/packages/{id}`
+3. `GET /api/v1/agency/{slug}/packages/destinations`
+4. `GET /api/v1/agency/{slug}/packages/featured`
 
-### **Agencia de prueba:**
-```
-agencia-principal
-```
+_Base URL (dev y prod):_ `https://mvpsolutions365.com/api/v1`
 
 ---
 
-## 📋 **EJEMPLO 1: Listar Todos los Paquetes**
+## Ejemplo 1: Seccion "Paquetes por destino" (API publica)
 
-### **URL:**
 ```
-GET https://mvpsolutions365.com/api/v1/agency/agencia-principal/packages
+GET https://mvpsolutions365.com/api/v1/packages?destination=Cartagena&per_page=6
 ```
 
-### **Respuesta esperada:**
+Respuesta:
 ```json
 {
-    "success": true,
-    "data": {
-        "current_page": 1,
-        "data": [
-            {
-                "id": 1,
-                "title": "Paquete Caribe Completo",
-                "origin": "Medellín",
-                "destination": "Cartagena",
-                "include": "Hotel, vuelo, traslados, desayuno",
-                "no_include": "Almuerzos, cenas, bebidas",
-                "itinerary": "Día 1: Llegada y check-in...",
-                "details": "Paquete turístico completo...",
-                "status": "active",
-                "valid_from": "2024-01-01",
-                "valid_until": "2024-12-31",
-                "available_units": 50,
-                "main_image": "https://mvpsolutions365.com/storage/packages/main-1.jpg",
-                "gallery_images": ["https://mvpsolutions365.com/storage/packages/gallery-1.jpg"],
-                "document_file": "https://mvpsolutions365.com/storage/packages/doc-1.pdf",
-                "min_price": 1500000,
-                "max_price": 2500000,
-                "schedules_count": 3,
-                "active_schedules_count": 2,
-                "created_at": "2024-01-15T10:30:00Z",
-                "updated_at": "2024-01-16T14:20:00Z"
-            }
-        ],
-        "total": 1,
-        "per_page": 20
+    "data": [
+        {
+            "id": 87,
+            "title": "Caribe Premium",
+            "origin": "Medellin",
+            "destination": "Cartagena",
+            "status": "active",
+            "main_image": "https://mvpsolutions365.com/storage/packages/caribe-premium.jpg",
+            "min_price": 1850000,
+            "max_price": 2450000,
+            "agency": {
+                "id": 3,
+                "name": "MVP Travel",
+                "slug": "mvp-travel"
+            },
+            "schedules": [
+                {
+                    "id": 145,
+                    "start_date": "2026-05-10",
+                    "status": "active",
+                    "min_fare": 1850000,
+                    "max_fare": 2100000
+                }
+            ]
+        }
+    ],
+    "links": {
+        "first": "https://mvpsolutions365.com/api/v1/packages?page=1",
+        "last": "https://mvpsolutions365.com/api/v1/packages?page=1",
+        "prev": null,
+        "next": null
     },
-    "agency": {
-        "id": 1,
-        "name": "Agencia Principal",
-        "slug": "agencia-principal"
+    "meta": {
+        "current_page": 1,
+        "per_page": 6,
+        "total": 1
+    },
+    "success": true,
+    "filters": {
+        "destination": "Cartagena",
+        "status": "active",
+        "only_active_schedules": true
     }
 }
 ```
 
----
-
-## 🔍 **EJEMPLO 2: Filtrar Paquetes por Destino**
-
-### **URL:**
-```
-GET https://mvpsolutions365.com/api/v1/agency/agencia-principal/packages?destination=Cartagena
-```
-
-### **Parámetros de filtrado disponibles:**
-- `search`: Búsqueda por título, origen o destino
-- `destination`: Filtrar por destino específico
-- `status`: Filtrar por estado de las salidas (active, inactive)
-- `package_status`: Filtrar por estado del paquete (active, inactive)
-- `limit`: Número de resultados por página
-
-### **Ejemplos de filtros:**
-```
-?search=caribe
-?destination=Cartagena
-?status=active
-?package_status=active
-?limit=10
-```
+Parametros utiles:
+- `destination`: nombre exacto mostrado en la web.
+- `search`: texto libre en titulo/origen/destino.
+- `agency`: slug para limitar por agencia.
+- `only_active_schedules`: `true` por defecto.
+- `per_page`: minimo 1, maximo 50 (default 12).
 
 ---
 
-## 📖 **EJEMPLO 3: Mostrar Paquete Específico**
+## Ejemplo 2: Landing o modal con el detalle (API publica)
 
-### **URL:**
 ```
-GET https://mvpsolutions365.com/api/v1/agency/agencia-principal/packages/1
+GET https://mvpsolutions365.com/api/v1/packages/87
 ```
 
-### **Respuesta esperada:**
+Respuesta:
 ```json
 {
-    "success": true,
     "data": {
-        "id": 1,
-        "title": "Paquete Caribe Completo",
-        "origin": "Medellín",
+        "id": 87,
+        "title": "Caribe Premium",
+        "origin": "Medellin",
         "destination": "Cartagena",
-        "include": "Hotel, vuelo, traslados, desayuno",
-        "no_include": "Almuerzos, cenas, bebidas",
-                        "itinerary": "Día 1: Llegada y check-in...",
-                "details": "Paquete turístico completo...",
-                "status": "active",
-                "valid_from": "2024-01-01",
-                "valid_until": "2024-12-31",
-                "available_units": 50,
-                "main_image": "https://mvpsolutions365.com/storage/packages/main-1.jpg",
-        "gallery_images": ["https://mvpsolutions365.com/storage/packages/gallery-1.jpg"],
-        "document_file": "https://mvpsolutions365.com/storage/packages/doc-1.pdf",
-        "min_price": 1500000,
-        "max_price": 2500000,
+        "include": "<p>Vuelo + Hotel + Traslados</p>",
+        "details": "<p>Plan completo</p>",
+        "gallery_images": [
+            "https://mvpsolutions365.com/storage/packages/gallery/caribe-1.jpg",
+            "https://mvpsolutions365.com/storage/packages/gallery/caribe-2.jpg"
+        ],
+        "document_file": "https://mvpsolutions365.com/storage/packages/docs/caribe.pdf",
         "schedules": [
             {
-                "id": 1,
-                "start_date": "2024-06-15",
-                "end_date": "2024-06-20",
+                "id": 145,
+                "start_date": "2026-05-10",
+                "end_date": "2026-05-15",
                 "status": "active",
-                "status_label": "Activa",
-                "notes": "Salida confirmada",
                 "fares": [
                     {
-                        "id": 1,
-                        "passenger_type": "Adulto",
-                        "accommodation_type": "Doble",
-                        "fare": 1500000,
-                        "description": "Precio por persona"
+                        "id": 411,
+                        "passenger_type": "adult",
+                        "accommodation_type": "double",
+                        "fare": 1850000,
+                        "currency": "COP"
                     }
-                ],
-                "min_fare": 1500000,
-                "max_fare": 1500000
+                ]
             }
-        ],
-        "created_at": "2024-01-15T10:30:00Z",
-        "updated_at": "2024-01-16T14:20:00Z"
+        ]
     },
-    "agency": {
-        "id": 1,
-        "name": "Agencia Principal",
-        "slug": "agencia-principal"
-    }
+    "success": true
 }
 ```
 
+Tip: agrega `only_active_schedules=true` si quieres ocultar salidas canceladas.
+
 ---
 
-## 🗺️ **EJEMPLO 4: Obtener Destinos Disponibles**
+## Ejemplo 3: Tabs de destinos (API publica)
 
-### **URL:**
 ```
-GET https://mvpsolutions365.com/api/v1/agency/agencia-principal/packages/destinations
+GET https://mvpsolutions365.com/api/v1/packages/destinations
 ```
 
-### **Respuesta esperada:**
+Respuesta:
 ```json
 {
     "success": true,
     "data": [
         "Cartagena",
-        "San Andrés",
-        "Santa Marta",
-        "Medellín",
-        "Bogotá"
+        "La Guajira",
+        "San Andres"
     ],
-    "agency": {
-        "id": 1,
-        "name": "Agencia Principal",
-        "slug": "agencia-principal"
+    "filters": {
+        "status": "active",
+        "only_active_schedules": true
     }
 }
 ```
 
+Puedes combinarlo con `agency=mvp-travel` si el sitio tiene una sola marca.
+
 ---
 
-## ⭐ **EJEMPLO 5: Obtener Paquetes Destacados**
+## Ejemplo 4: Listar paquetes por agencia (API interna)
 
-### **URL:**
 ```
+GET https://mvpsolutions365.com/api/v1/agency/agencia-principal/packages
+```
+
+Respuesta incluida en `API_DOCUMENTATION.md`. Recuerda los filtros extra: `search`, `destination`, `status`, `package_status`, `limit`.
+
+---
+
+## Ejemplo 5: Destinos y destacados por agencia
+
+```
+GET https://mvpsolutions365.com/api/v1/agency/agencia-principal/packages/destinations
 GET https://mvpsolutions365.com/api/v1/agency/agencia-principal/packages/featured
 ```
 
-### **Respuesta esperada:**
-```json
-{
-    "success": true,
-    "data": [
-        {
-            "id": 1,
-            "title": "Paquete Caribe Completo",
-            "origin": "Medellín",
-            "destination": "Cartagena",
-            "status": "active",
-            "valid_from": "2024-01-01",
-            "valid_until": "2024-12-31",
-            "available_units": 50,
-            "main_image": "https://mvpsolutions365.com/storage/packages/main-1.jpg",
-            "min_price": 1500000,
-            "max_price": 2500000,
-            "active_schedules_count": 2
-        }
-    ],
-    "agency": {
-        "id": 1,
-        "name": "Agencia Principal",
-        "slug": "agencia-principal"
-    }
-}
-```
+Ambos devuelven el objeto `agency` junto a los datos filtrados.
 
 ---
 
-## 💻 **IMPLEMENTACIÓN EN FRONTEND**
-
-### **JavaScript - Función para obtener paquetes:**
+## Ejemplo 6: Consumir la API publica desde JavaScript
 
 ```javascript
-class PackageAPI {
-    constructor(baseUrl = 'https://mvpsolutions365.com/api/v1') {
-        this.baseUrl = baseUrl;
+async function loadPackagesByDestination(destination) {
+    const params = new URLSearchParams({
+        destination,
+        per_page: 6,
+        only_active_schedules: true,
+    });
+
+    const response = await fetch(`https://mvpsolutions365.com/api/v1/packages?${params.toString()}`);
+    const payload = await response.json();
+
+    if (payload.success) {
+        return payload.data.map(pkg => ({
+            id: pkg.id,
+            title: pkg.title,
+            min_price: pkg.min_price,
+            destination: pkg.destination,
+        }));
     }
 
-    // Obtener todos los paquetes de una agencia
-    async getPackages(agencySlug, filters = {}) {
-        const params = new URLSearchParams(filters);
-        const url = `${this.baseUrl}/agency/${agencySlug}/packages?${params}`;
-        
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data.success) {
-                return data;
-            } else {
-                throw new Error(data.message || 'Error al obtener paquetes');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            throw error;
-        }
-    }
-
-    // Obtener un paquete específico
-    async getPackage(agencySlug, packageId) {
-        const url = `${this.baseUrl}/agency/${agencySlug}/packages/${packageId}`;
-        
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data.success) {
-                return data;
-            } else {
-                throw new Error(data.message || 'Error al obtener paquete');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            throw error;
-        }
-    }
-
-    // Obtener destinos disponibles
-    async getDestinations(agencySlug) {
-        const url = `${this.baseUrl}/agency/${agencySlug}/packages/destinations`;
-        
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data.success) {
-                return data;
-            } else {
-                throw new Error(data.message || 'Error al obtener destinos');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            throw error;
-        }
-    }
-
-    // Obtener paquetes destacados
-    async getFeaturedPackages(agencySlug) {
-        const url = `${this.baseUrl}/agency/${agencySlug}/packages/featured`;
-        
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data.success) {
-                return data;
-            } else {
-                throw new Error(data.message || 'Error al obtener paquetes destacados');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            throw error;
-        }
-    }
+    return [];
 }
 
-// Ejemplo de uso
-const packageAPI = new PackageAPI();
-
-// Obtener todos los paquetes
-packageAPI.getPackages('agencia-principal')
-    .then(data => {
-        console.log('Paquetes:', data.data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-
-// Obtener paquetes con filtros
-packageAPI.getPackages('agencia-principal', {
-    destination: 'Cartagena',
-    status: 'active',
-    limit: 10
-})
-    .then(data => {
-        console.log('Paquetes filtrados:', data.data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+loadPackagesByDestination('Cartagena').then(console.log);
 ```
 
----
-
-## 🎨 **EJEMPLO DE INTERFAZ HTML**
-
-### **Lista de paquetes:**
-
-```html
-<div class="packages-grid">
-    <div class="package-card" v-for="package in packages" :key="package.id">
-        <img :src="package.main_image" :alt="package.title" class="package-image">
-        <div class="package-content">
-            <h3 class="package-title">{{ package.title }}</h3>
-            <p class="package-route">{{ package.origin }} → {{ package.destination }}</p>
-            <div class="package-price">
-                <span class="price-label">Desde:</span>
-                <span class="price-value">${{ formatPrice(package.min_price) }}</span>
-            </div>
-            <div class="package-features">
-                <span class="feature">{{ package.active_schedules_count }} salidas activas</span>
-            </div>
-            <button @click="viewPackage(package.id)" class="btn-view">
-                Ver detalles
-            </button>
-        </div>
-    </div>
-</div>
-```
-
----
-
-## 🚀 **PRÓXIMOS PASOS**
-
-1. **✅ API de paquetes implementada** - 4 endpoints funcionando
-2. **🔄 Crear paquetes en el CRM** - Usar el formulario que ya tienes
-3. **🔄 Probar endpoints** - Verificar que devuelvan datos correctamente
-4. **🔄 Integrar en tu sitio web** - Mostrar paquetes en el frontend
-5. **🔄 Crear páginas de paquetes** - Lista, detalle, filtros
-
----
-
-**¿Quieres que te ayude a probar algún endpoint específico o necesitas ayuda con la implementación en el frontend?** 🚀
-
-
+Para consumir la API interna solo cambia la URL base y agrega el `agency_slug` correspondiente.
