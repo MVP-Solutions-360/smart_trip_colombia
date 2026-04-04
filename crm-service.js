@@ -129,6 +129,13 @@ class CRMConnector {
     async getPublicSchedule(id) {
         return await this._request(`/packages/schedules/${id}`, { method: 'GET' });
     }
+
+    async createPackageBooking(bookingData) {
+        return await this._request('/package-booking', {
+            method: 'POST',
+            body: JSON.stringify(bookingData)
+        });
+    }
 }
 
 const crm = new CRMConnector();

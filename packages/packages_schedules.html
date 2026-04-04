@@ -136,6 +136,112 @@
             .carousel-container { height: 350px; }
             th, td { padding: 12px 8px; font-size: 12px; }
         }
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 32px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 32px;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .modal-footer {
+            padding: 24px 32px;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-config-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .remove-room {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .passenger-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .total-floating {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 800;
+        }
     </style>
 </head>
 
@@ -144,6 +250,45 @@
 
     <div id="loader" class="container" style="padding: 100px 0; text-align: center;">
         <div class="loading-spinner">Sincronizando detalles...</div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-family: 'Outfit', sans-serif; margin: 0; font-size: 1.5rem;">Configurar Reserva</h2>
+                    <p id="modal-subtitle" style="margin: 4px 0 0; opacity: 0.8; font-size: 0.9rem;">Hotel Seleccionado</p>
+                </div>
+                <button onclick="closeBookingModal()" style="background: none; border: none; color: white; cursor: pointer;">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="rooms-container">
+                    <!-- Habitaciones inyectadas -->
+                </div>
+                
+                <button type="button" class="btn-secondary" onclick="addRoom()" style="width: 100%; border-style: dashed; background: white; color: var(--primary); margin-bottom: 24px;">
+                    <span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 8px;">add_circle</span>
+                    Añadir otra habitación
+                </button>
+
+                <div class="input-group">
+                    <label>Notas Adicionales</label>
+                    <textarea id="booking-notes" placeholder="Ej: Vuelo llega a las 10am, cama adicional para niño, etc." style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); min-height: 80px;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div>
+                    <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Total Estimado</span>
+                    <span id="booking-total" class="total-floating">$ 0</span>
+                </div>
+                <button id="confirm-booking-btn" class="btn-primary" style="padding: 16px 48px;" onclick="submitBooking()">
+                    Confirmar Reserva
+                </button>
+            </div>
+        </div>
     </div>
 
     <div id="main-content" style="display: none;">
@@ -231,6 +376,15 @@
             maximumFractionDigits: 0
         });
 
+        let currentPackage = null;
+        let selectedConfig = {
+            scheduleId: null,
+            hotelName: null,
+            fares: {}, // key: accommodation_passenger, value: fare object
+            agencyId: null
+        };
+        let bookingRooms = [];
+
         document.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             const packageId = params.get('id');
@@ -242,6 +396,7 @@
                 const pkg = response.data;
                 
                 if (!pkg) throw new Error("No pudimos encontrar este paquete.");
+                currentPackage = pkg;
 
                 // Poblar info
                 document.getElementById('pkg-title').textContent = pkg.title;
@@ -284,12 +439,12 @@
             let currentSlide = 0;
             const totalSlides = gallery.length;
 
-            document.getElementById('nextBtn').addEventListener('click', () => {
+            document.getElementById('nextBtn')?.addEventListener('click', () => {
                 currentSlide = (currentSlide + 1) % totalSlides;
                 track.style.transform = `translateX(-${currentSlide * 100}%)`;
             });
 
-            document.getElementById('prevBtn').addEventListener('click', () => {
+            document.getElementById('prevBtn')?.addEventListener('click', () => {
                 currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
                 track.style.transform = `translateX(-${currentSlide * 100}%)`;
             });
@@ -311,7 +466,7 @@
                 section.innerHTML = `
                     <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px;">
                         <h3 style="margin: 0;">Salida: ${sch.start_date} al ${sch.end_date || ''}</h3>
-                        <span class="badge-status" style="background: ${sch.available_units > 0 ? '#16a34a' : '#ef4444'}">
+                        <span class="badge-status" style="background: ${sch.available_units > 0 ? '#16a34a' : '#ef4444'}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
                             ${sch.available_units > 0 ? `${sch.available_units} Cupos disponibles` : 'Agotado'}
                         </span>
                     </div>
@@ -321,11 +476,16 @@
                 const groups = {};
                 (sch.fares || []).forEach(f => {
                     const key = `${f.hotel || 'Único'}_${f.meal_plan || 'Estándar'}`;
-                    if (!groups[key]) groups[key] = { hotel: f.hotel || 'General', plan: f.meal_plan || 'Estándar', values: {} };
+                    if (!groups[key]) groups[key] = { 
+                        hotel: f.hotel || 'General', 
+                        plan: f.meal_plan || 'Estándar', 
+                        values: {},
+                        fareObjects: {} 
+                    };
                     
-                    // Guardamos el precio según acomodación y tipo pajajeros
                     const subKey = `${f.accommodation_type}_${f.passenger_type}`;
                     groups[key].values[subKey] = f.fare;
+                    groups[key].fareObjects[subKey] = f;
                 });
 
                 const tableWrapper = document.createElement('div');
@@ -333,6 +493,13 @@
                 
                 let rowsHtml = '';
                 Object.values(groups).forEach(g => {
+                    const fareData = btoa(JSON.stringify({
+                        schId: sch.id,
+                        hotel: g.hotel,
+                        fares: g.fareObjects,
+                        agencyId: currentPackage?.agency_id || currentPackage?.user_id || 1
+                    }));
+
                     rowsHtml += `
                         <tr>
                             <td class="hotel-cell">${g.hotel}</td>
@@ -343,6 +510,13 @@
                             <td class="price-val">${formatPrice(g.values['infant_infant'])}</td>
                             <td>${g.plan}</td>
                             <td>${determineAccommodationType(g.values)}</td>
+                            <td>
+                                <button class="btn-primary" style="padding: 8px 16px; font-size: 0.9rem;"
+                                    onclick="startBooking('${fareData}')"
+                                    ${sch.available_units <= 0 ? 'disabled' : ''}>
+                                    Reservar
+                                </button>
+                            </td>
                         </tr>
                     `;
                 });
@@ -359,10 +533,11 @@
                                 <th>Infante</th>
                                 <th>Plan Alimentación</th>
                                 <th>Acomodación</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${rowsHtml || '<tr><td colspan="8" style="padding: 40px; color: var(--text-muted);">No hay tarifas detalladas para esta salida.</td></tr>'}
+                            ${rowsHtml || '<tr><td colspan="9" style="padding: 40px; color: var(--text-muted);">No hay tarifas detalladas para esta salida.</td></tr>'}
                         </tbody>
                     </table>
                 `;
@@ -380,6 +555,206 @@
             if (values['triple_adult']) return "Familiar";
             if (values['double_adult']) return "Pareja/Doble";
             return "General";
+        }
+
+        // --- BOOKING LOGIC ---
+
+        function startBooking(encodedData) {
+            try {
+                const data = JSON.parse(atob(encodedData));
+                selectedConfig = {
+                    scheduleId: data.schId,
+                    hotelName: data.hotel,
+                    fares: data.fares,
+                    agencyId: data.agencyId
+                };
+
+                document.getElementById('modal-subtitle').textContent = `Hotel: ${data.hotel}`;
+                document.getElementById('booking-modal').style.display = 'flex';
+                
+                // Iniciar con una habitación
+                bookingRooms = [];
+                addRoom();
+            } catch (e) {
+                console.error("Error al iniciar reserva:", e);
+            }
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').style.display = 'none';
+        }
+
+        function addRoom() {
+            const id = Date.now();
+            bookingRooms.push({ id, adults: 2, children: 0, infants: 0, child_ages: [], infant_ages: [] });
+            renderBookingRooms();
+            calculateTotal();
+        }
+
+        function removeRoom(id) {
+            if (bookingRooms.length <= 1) return;
+            bookingRooms = bookingRooms.filter(r => r.id !== id);
+            renderBookingRooms();
+            calculateTotal();
+        }
+
+        function updateRoomField(roomId, field, value) {
+            const room = bookingRooms.find(r => r.id === roomId);
+            if (room) {
+                room[field] = parseInt(value) || 0;
+                
+                // Limitar máximos
+                if (field === 'adults' && room[field] > 3) room[field] = 3;
+                if (field === 'children' && room[field] > 3) room[field] = 3;
+
+                // Ajustar arrays de edades
+                if (field === 'children') {
+                    room.child_ages = Array(room.children).fill(8);
+                }
+                if (field === 'infants') {
+                    room.infant_ages = Array(room.infants).fill(1);
+                }
+            }
+            renderBookingRooms();
+            calculateTotal();
+        }
+
+        function updateAge(roomId, type, index, val) {
+            const room = bookingRooms.find(r => r.id === roomId);
+            if (room) {
+                if (type === 'child') room.child_ages[index] = parseInt(val);
+                else room.infant_ages[index] = parseInt(val);
+            }
+        }
+
+        function renderBookingRooms() {
+            const container = document.getElementById('rooms-container');
+            container.innerHTML = '';
+
+            bookingRooms.forEach((room, idx) => {
+                const card = document.createElement('div');
+                card.className = 'room-config-card';
+                
+                let childAgesHtml = '';
+                room.child_ages.forEach((age, i) => {
+                    childAgesHtml += `
+                        <div class="input-group">
+                            <label>Edad N${i+1}</label>
+                            <input type="number" value="${age}" min="2" max="11" onchange="updateAge(${room.id}, 'child', ${i}, this.value)">
+                        </div>
+                    `;
+                });
+
+                let infantAgesHtml = '';
+                room.infant_ages.forEach((age, i) => {
+                    infantAgesHtml += `
+                        <div class="input-group">
+                            <label>Edad I${i+1}</label>
+                            <input type="number" value="${age}" min="0" max="1" onchange="updateAge(${room.id}, 'infant', ${i}, this.value)">
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    ${bookingRooms.length > 1 ? `<span class="material-symbols-outlined remove-room" onclick="removeRoom(${room.id})">delete</span>` : ''}
+                    <h4 style="margin: 0 0 16px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">bed</span> 
+                        Habitación ${idx + 1}
+                    </h4>
+                    <div class="passenger-grid">
+                        <div class="input-group">
+                            <label>Adultos</label>
+                            <select onchange="updateRoomField(${room.id}, 'adults', this.value)">
+                                <option value="1" ${room.adults == 1 ? 'selected' : ''}>1 Adulto</option>
+                                <option value="2" ${room.adults == 2 ? 'selected' : ''}>2 Adultos</option>
+                                <option value="3" ${room.adults == 3 ? 'selected' : ''}>3 Adultos</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Niños (2-11)</label>
+                            <input type="number" value="${room.children}" min="0" max="3" onchange="updateRoomField(${room.id}, 'children', this.value)">
+                        </div>
+                        <div class="input-group">
+                            <label>Infantes (<2)</label>
+                            <input type="number" value="${room.infants}" min="0" max="2" onchange="updateRoomField(${room.id}, 'infants', this.value)">
+                        </div>
+                    </div>
+                    ${childAgesHtml || infantAgesHtml ? `
+                        <div class="passenger-grid" style="grid-template-columns: repeat(4, 1fr); background: #f1f5f9; padding: 12px; border-radius: 8px; margin-top: 16px;">
+                            ${childAgesHtml}
+                            ${infantAgesHtml}
+                        </div>
+                    ` : ''}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function calculateTotal() {
+            let grandTotal = 0;
+            const f = selectedConfig.fares;
+
+            bookingRooms.forEach(room => {
+                let adultPriceUnit = 0;
+                if (room.adults === 1) adultPriceUnit = f['single_adult']?.fare || 0;
+                else if (room.adults === 2) adultPriceUnit = f['double_adult']?.fare || 0;
+                else if (room.adults === 3) adultPriceUnit = f['triple_adult']?.fare || 0;
+
+                const childrenPrice = (f['child_child']?.fare || f['double_child']?.fare || 0) * room.children;
+                const infantsPrice = (f['infant_infant']?.fare || 0) * room.infants;
+
+                grandTotal += (adultPriceUnit * room.adults) + childrenPrice + infantsPrice;
+            });
+
+            document.getElementById('booking-total').textContent = priceFormatter.format(grandTotal);
+        }
+
+        async function submitBooking() {
+            const btn = document.getElementById('confirm-booking-btn');
+            const originalText = btn.textContent;
+            
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Procesando...';
+
+                const reqBody = {
+                    agency_id: selectedConfig.agencyId,
+                    package_id: currentPackage.id,
+                    package_schedule_id: selectedConfig.scheduleId,
+                    inlet_channel: "web",
+                    notes: document.getElementById('booking-notes').value,
+                    rooms: bookingRooms.map(room => {
+                        let accommodationKey = 'double_adult';
+                        if (room.adults === 1) accommodationKey = 'single_adult';
+                        if (room.adults === 3) accommodationKey = 'triple_adult';
+
+                        return {
+                            package_fare_id: selectedConfig.fares[accommodationKey]?.id,
+                            adults: room.adults,
+                            children: room.children,
+                            infants: room.infants,
+                            child_ages: room.child_ages,
+                            infant_ages: room.infant_ages,
+                            description: `Habitación para ${room.adults} adultos, ${room.children} niños, ${room.infants} infantes`
+                        };
+                    })
+                };
+
+                const result = await window.CRM.createPackageBooking(reqBody);
+
+                if (result.success) {
+                    alert(`¡Reserva Exitosa!\nTu número de reserva es: ${result.data.booking_number}`);
+                    closeBookingModal();
+                    window.location.reload(); 
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert(`Error al reservar: ${error.message || 'La sesión ha expirado o el cupo ya no está disponible.'}`);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
         }
     </script>
 </body>
